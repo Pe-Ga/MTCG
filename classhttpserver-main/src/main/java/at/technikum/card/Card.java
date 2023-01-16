@@ -1,7 +1,5 @@
 package at.technikum.card;
 
-import java.lang.annotation.ElementType;
-
 public class Card
 {
 
@@ -50,6 +48,6 @@ public class Card
 
     @Override
     public String toString() {
-        return this.elementType.name() + this.monsterType.name() + " (" + this.baseDamage + " Damage)";
+        return this.elementType.name() + " "+ this.monsterType.name() + " ( " + this.baseDamage + " Damage )";
     }
 }

@@ -4,5 +4,5 @@ public enum ElementType
 {
     Fire,
     Water,
-    Normal
+    Normal,
 }
