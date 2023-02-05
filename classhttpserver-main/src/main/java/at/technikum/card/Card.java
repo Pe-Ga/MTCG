@@ -45,9 +45,50 @@ public class Card
         this.baseDamage = baseDamage;
     }
 
+    public boolean isMonster()
+    {
+        return this.monsterType != MonsterType.Spell && this.monsterType != null;
+    }
+
+    public float calculatedDamage(Card card)
+    {
+        float factor;
+
+        if(card == null )
+            factor = 0;
+        else
+            if(this.isMonster() && card.isMonster())
+                factor = 1;
+            else
+            {
+                factor = switch (this.getElementType())
+                {
+                    case Fire -> switch (card.getElementType())
+                    {
+                        case Water -> 0.5f;
+                        case Fire -> 1.0f;
+                        case Normal -> 2.0f;
+                    };
+                    case Water -> switch (card.getElementType())
+                    {
+                        case Water -> 1.0f;
+                        case Fire -> 2.0f;
+                        case Normal -> 0.5f;
+                    };
+                    case Normal -> switch (card.getElementType())
+                    {
+                        case Water -> 2.0f;
+                        case Fire -> 0.5f;
+                        case Normal -> 1.0f;
+                    };
+                };
+            }
+            return this.baseDamage * factor;
+    }
 
     @Override
-    public String toString() {
+    public String toString()
+    {
         return this.elementType.name() + " "+ this.monsterType.name() + " ( " + this.baseDamage + " Damage )";
     }
 }

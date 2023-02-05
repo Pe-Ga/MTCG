@@ -4,17 +4,20 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.List;
+import java.util.Map;
 
 public class RequestContext {
 
     private static final String CONTENT_LENGTH_HEADER_NAME = "Content-Length";
     private String httpVerb;
     private String path;
+    private List<String> pathExtensions;
     private List<Header> headers;
+
+    private Map<String, String > urlParameters;
     private String body;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
-
 
     public String getHttpVerb() {
         return httpVerb;
@@ -32,12 +35,28 @@ public class RequestContext {
         this.path = path;
     }
 
+    public List<String> getPathExtensions() {
+        return pathExtensions;
+    }
+
+    public void setPathExtensions(List<String> pathExtensions) {
+        this.pathExtensions = pathExtensions;
+    }
+
     public List<Header> getHeaders() {
         return headers;
     }
 
     public void setHeaders(List<Header> headers) {
         this.headers = headers;
+    }
+
+    public Map<String, String> getUrlParameters() {
+        return urlParameters;
+    }
+
+    public void setUrlParameters(Map<String, String> urlParameters) {
+        this.urlParameters = urlParameters;
     }
 
     public int getContentLength() {
@@ -69,6 +88,8 @@ public class RequestContext {
     public void print() {
         System.out.println("HTTP-Verb: " + httpVerb);
         System.out.println("Path " + path);
+        System.out.println("Extensions: " + this.pathExtensions);
+        System.out.println("URL parameters: " + this.urlParameters);
         System.out.println("Headers: " + headers);
         System.out.println("Body: " + body);
     }
