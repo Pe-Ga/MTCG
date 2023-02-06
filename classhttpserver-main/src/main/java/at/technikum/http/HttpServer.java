@@ -55,9 +55,29 @@ public class HttpServer {
                             response.setHttpStatus(HttpStatus.INTERNAL_SERVER_ERROR);
                         }
                     }
+                    /*
                     Header header = new Header();
                     header.setName("Content-Type");
                     header.setValue("application/json");
+                    */
+                    if(response == null) {
+                        response = new Response();
+                    }
+
+                    if(response.getHeader() == null) {
+                        response.setHeader(new Header());
+                        response.getHeader().setName("Content-Type");
+                        response.getHeader().setValue("text/plain; charset=utf-8");
+                    }
+
+                    if(response.getBody() == null) {
+                        response.setBody("");
+                    }
+
+                    if(response.getHttpStatus() == null) {
+                        response.setHttpStatus(HttpStatus.NO_CONTENT);
+                    }
+
 
                     BufferedWriter w = new BufferedWriter(
                             new OutputStreamWriter(socket.getOutputStream()));
@@ -66,7 +86,7 @@ public class HttpServer {
                     w.write(response.getHttpStatus().getStatusCode() + " ");
                     w.write(response.getHttpStatus().getStatusMessage());
                     w.write("\r\n");
-                    w.write(header.getName() + ": " + header.getValue() + "; charset=utf-8\r\n");
+                    w.write(response.getHeader().getName() + ": " + response.getHeader().getValue() + "; charset=utf-8\r\n");
                     w.write("\r\n");
                     w.write(response.getBody());
                     w.flush();

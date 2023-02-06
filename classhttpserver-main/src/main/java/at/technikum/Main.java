@@ -79,48 +79,51 @@ public class Main {
     public static void main(String[] args) {
 
 
-        Router router1 = new Router();
+        var router = new Router();
 
         RouteIdentifier routeIdentifier;
 
         routeIdentifier = new RouteIdentifier("/users","GET");
-        router1.registerRoute(new Pair<>(routeIdentifier, new UsersGetEndpoint()));
+        router.registerRoute(new Pair<>(routeIdentifier, new UsersGetEndpoint()));
 
         routeIdentifier = new RouteIdentifier("/users","POST");
-        router1.registerRoute(new Pair<>(routeIdentifier, new UsersPostEndpoint()));
+        router.registerRoute(new Pair<>(routeIdentifier, new UsersPostEndpoint()));
 
         routeIdentifier = new RouteIdentifier("/users", "PUT");
-        router1.registerRoute(new Pair<>(routeIdentifier, new UsersPutEndpoint()));
+        router.registerRoute(new Pair<>(routeIdentifier, new UsersPutEndpoint()));
 
-        routeIdentifier = new RouteIdentifier("/packeges", "POST");
-        router1.registerRoute(new Pair<>(routeIdentifier, new PackagesPostEndpoint()));
+        routeIdentifier = new RouteIdentifier("/packages", "POST");
+        router.registerRoute(new Pair<>(routeIdentifier, new PackagesPostEndpoint()));
+
+        routeIdentifier = new RouteIdentifier("/transactions", "POST");
+        router.registerRoute(new Pair<>(routeIdentifier, new TransactionsPostEndpoint()));
 
         routeIdentifier = new RouteIdentifier("/card", "GET");
-        router1.registerRoute(new Pair<>(routeIdentifier, new CardsGetEndpoint()));
+        router.registerRoute(new Pair<>(routeIdentifier, new CardsGetEndpoint()));
 
         routeIdentifier = new RouteIdentifier("/deck", "GET");
-        router1.registerRoute(new Pair<>(routeIdentifier, new DeckGetEndpoint()));
+        router.registerRoute(new Pair<>(routeIdentifier, new DeckGetEndpoint()));
 
         routeIdentifier = new RouteIdentifier("/deck", "PUT");
-        router1.registerRoute(new Pair<>(routeIdentifier, new DeckPutEndpoint()));
+        router.registerRoute(new Pair<>(routeIdentifier, new DeckPutEndpoint()));
 
         routeIdentifier = new RouteIdentifier("/stats", "GET");
-        router1.registerRoute(new Pair<>(routeIdentifier, new StatsGetEndpoint()));
+        router.registerRoute(new Pair<>(routeIdentifier, new StatsGetEndpoint()));
 
         routeIdentifier = new RouteIdentifier("/scoreboard", "GET");
-        router1.registerRoute(new Pair<>(routeIdentifier, new ScoreboardGetEndpoints()));
+        router.registerRoute(new Pair<>(routeIdentifier, new ScoreboardGetEndpoints()));
 
         routeIdentifier = new RouteIdentifier("/battles", "POST");
-        router1.registerRoute(new Pair<>(routeIdentifier, new BattlesPostEndpoint()));
+        router.registerRoute(new Pair<>(routeIdentifier, new BattlesPostEndpoint()));
 
         routeIdentifier = new RouteIdentifier("/tradings", "GET");
-        router1.registerRoute(new Pair<>(routeIdentifier, new TradingsGetEndpoint()));
+        router.registerRoute(new Pair<>(routeIdentifier, new TradingsGetEndpoint()));
 
         routeIdentifier = new RouteIdentifier("/tradings", "POST");
-        router1.registerRoute(new Pair<>(routeIdentifier, new TradingsPostEndpoint()));
+        router.registerRoute(new Pair<>(routeIdentifier, new TradingsPostEndpoint()));
 
         routeIdentifier = new RouteIdentifier("/tradings", "DELETE");
-        router1.registerRoute(new Pair<>(routeIdentifier, new TradingsDeleteEndpoint()));
+        router.registerRoute(new Pair<>(routeIdentifier, new TradingsDeleteEndpoint()));
 
 
 
@@ -128,8 +131,8 @@ public class Main {
 
 
 
-        HttpServer server1 = new HttpServer(router1);
-        server1.start();
+        var httpServer = new HttpServer(router);
+        httpServer.start();
 
     }
 
