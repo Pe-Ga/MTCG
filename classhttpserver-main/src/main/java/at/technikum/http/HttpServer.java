@@ -38,7 +38,7 @@ public class HttpServer {
                     if( route == null)
                     {
                         response = new Response();
-                        response.setBody("Not found: Path " + requestContext.getPath());
+                        response.setBody("Not found: Path " + requestContext.getPath().split("\\?")[0]);
                         response.setHttpStatus(HttpStatus.NOT_FOUND);
                     }
                     else

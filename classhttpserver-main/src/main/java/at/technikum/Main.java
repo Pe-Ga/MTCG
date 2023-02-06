@@ -1,7 +1,6 @@
 package at.technikum;
 
-import at.technikum.application.endpoints.UsersGetEndpoint;
-import at.technikum.application.endpoints.UsersPostEndpoint;
+import at.technikum.application.endpoints.*;
 import at.technikum.application.router.*;
 import at.technikum.application.util.Pair;
 import at.technikum.card.ElementType;
@@ -89,6 +88,39 @@ public class Main {
 
         routeIdentifier = new RouteIdentifier("/users","POST");
         router1.registerRoute(new Pair<>(routeIdentifier, new UsersPostEndpoint()));
+
+        routeIdentifier = new RouteIdentifier("/users", "PUT");
+        router1.registerRoute(new Pair<>(routeIdentifier, new UsersPutEndpoint()));
+
+        routeIdentifier = new RouteIdentifier("/packeges", "POST");
+        router1.registerRoute(new Pair<>(routeIdentifier, new PackagesPostEndpoint()));
+
+        routeIdentifier = new RouteIdentifier("/card", "GET");
+        router1.registerRoute(new Pair<>(routeIdentifier, new CardsGetEndpoint()));
+
+        routeIdentifier = new RouteIdentifier("/deck", "GET");
+        router1.registerRoute(new Pair<>(routeIdentifier, new DeckGetEndpoint()));
+
+        routeIdentifier = new RouteIdentifier("/deck", "PUT");
+        router1.registerRoute(new Pair<>(routeIdentifier, new DeckPutEndpoint()));
+
+        routeIdentifier = new RouteIdentifier("/stats", "GET");
+        router1.registerRoute(new Pair<>(routeIdentifier, new StatsGetEndpoint()));
+
+        routeIdentifier = new RouteIdentifier("/scoreboard", "GET");
+        router1.registerRoute(new Pair<>(routeIdentifier, new ScoreboardGetEndpoints()));
+
+        routeIdentifier = new RouteIdentifier("/battles", "POST");
+        router1.registerRoute(new Pair<>(routeIdentifier, new BattlesPostEndpoint()));
+
+        routeIdentifier = new RouteIdentifier("/tradings", "GET");
+        router1.registerRoute(new Pair<>(routeIdentifier, new TradingsGetEndpoint()));
+
+        routeIdentifier = new RouteIdentifier("/tradings", "POST");
+        router1.registerRoute(new Pair<>(routeIdentifier, new TradingsPostEndpoint()));
+
+        routeIdentifier = new RouteIdentifier("/tradings", "DELETE");
+        router1.registerRoute(new Pair<>(routeIdentifier, new TradingsDeleteEndpoint()));
 
 
 

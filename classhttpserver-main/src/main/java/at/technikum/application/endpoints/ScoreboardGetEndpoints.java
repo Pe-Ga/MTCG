@@ -1,4 +1,12 @@
 package at.technikum.application.endpoints;
 
-public class ScoreboardGetEndpoints {
+import at.technikum.application.router.Route;
+import at.technikum.http.RequestContext;
+import at.technikum.http.Response;
+
+public class ScoreboardGetEndpoints implements Route {
+    @Override
+    public Response process(RequestContext requestContext) {
+        return null;
+    }
 }

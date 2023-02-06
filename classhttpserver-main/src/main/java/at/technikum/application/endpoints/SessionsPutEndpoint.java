@@ -1,4 +1,12 @@
 package at.technikum.application.endpoints;
 
-public class SessionsPutEndpoint {
+import at.technikum.application.router.Route;
+import at.technikum.http.RequestContext;
+import at.technikum.http.Response;
+
+public class SessionsPutEndpoint implements Route {
+    @Override
+    public Response process(RequestContext requestContext) {
+        return null;
+    }
 }
