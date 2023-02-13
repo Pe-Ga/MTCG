@@ -1,6 +1,9 @@
 package at.technikum;
 
 import at.technikum.application.endpoints.*;
+import at.technikum.application.model.User;
+import at.technikum.application.repository.UserRepository;
+import at.technikum.application.repository.UserRepositoryImpl;
 import at.technikum.application.router.*;
 import at.technikum.application.util.Pair;
 import at.technikum.application.model.card.ElementType;
@@ -12,6 +15,7 @@ import at.technikum.http.RequestContext;
 import at.technikum.player.Player;
 import java.sql.*;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -80,33 +84,11 @@ public class Main {
 
     public static void main(String[] args){
 
-        Connection con = null;
-        try {
-            con = DriverManager.getConnection("jdbc:postgresql://localhost:5432/swen1db",
-                    "swen1user","swen1pw");
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        var userRepository = new UserRepositoryImpl();
 
-        if(con!=null)
-            System.out.println("Sucessfully connected to Database.");
-
-        String query = "select * from testtable";
-        try {
-            Statement smt = con.createStatement();
-            ResultSet rs = smt.executeQuery(query);
-            while(rs.next())
-            {
-                System.out.println(rs.getString("username"));
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-
-        try {
-            con.close();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+        for(User element : userRepository.findAllUsers())
+        {
+            System.out.println(element.getUsername());
         }
 
         var router = new Router();

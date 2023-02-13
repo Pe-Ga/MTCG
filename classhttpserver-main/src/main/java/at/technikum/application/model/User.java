@@ -22,7 +22,7 @@ public class User {
 
     private List<Card> collection;
 
-    public User(String username, String password) {
+    public User() {
         this.username = username;
         this.password = password;
     }
@@ -127,4 +127,11 @@ public class User {
     public void setCollection(List<Card> collection) {
         this.collection = collection;
     }
+/*
+    @Override
+    public String toString()
+    {
+        return this.getUsername();
+    }
+*/
 }

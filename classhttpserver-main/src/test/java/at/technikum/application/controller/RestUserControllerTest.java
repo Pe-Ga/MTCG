@@ -57,7 +57,7 @@ public class RestUserControllerTest {
         // Act
         restUserController.register(credentials);
         when(userRepository.findUserByUsername("kienboec"))
-                .thenReturn(new User("kienboec", "password"));
+                .thenReturn(new User());
         Response response = restUserController.register(credentials);
         // Assert
         assertEquals(HttpStatus.BAD_REQUEST, response.getHttpStatus());
