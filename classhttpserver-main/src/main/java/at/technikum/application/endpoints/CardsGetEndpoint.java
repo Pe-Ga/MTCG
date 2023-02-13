@@ -6,7 +6,11 @@ import at.technikum.http.HttpStatus;
 import at.technikum.http.RequestContext;
 import at.technikum.http.Response;
 
+import java.sql.DriverManager;
+
 public class CardsGetEndpoint implements Route {
+
+
     @Override
     public Response process(RequestContext requestContext) {
 

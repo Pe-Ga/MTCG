@@ -1,8 +1,8 @@
 package at.technikum.game;
 
-import at.technikum.card.Card;
-import at.technikum.card.ElementType;
-import at.technikum.card.MonsterType;
+import at.technikum.application.model.card.Card;
+import at.technikum.application.model.card.ElementType;
+import at.technikum.application.model.card.MonsterType;
 import org.junit.jupiter.api.Test;
 import java.util.LinkedList;
 import java.util.List;

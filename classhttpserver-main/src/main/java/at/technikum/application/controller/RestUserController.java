@@ -67,7 +67,6 @@ public class RestUserController implements Controller {
             this::login
         ));
 
-
         return userRoutes;
     }
 }

@@ -1,7 +1,6 @@
 package at.technikum.game;
 
-import at.technikum.card.Card;
-import at.technikum.card.MonsterType;
+import at.technikum.application.model.card.Card;
 import at.technikum.player.Player;
 
 import java.util.List;

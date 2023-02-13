@@ -1,6 +1,8 @@
 package at.technikum.card;
 
-import org.junit.jupiter.api.BeforeEach;
+import at.technikum.application.model.card.Card;
+import at.technikum.application.model.card.ElementType;
+import at.technikum.application.model.card.MonsterType;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -12,7 +14,7 @@ public class CardTest
     {
         for(MonsterType type : MonsterType.values())
         {
-           Card monsterCard = new Card(type,ElementType.Normal,10);
+           Card monsterCard = new Card(type, ElementType.Normal,10);
             if(type == MonsterType.Spell)
                 assertFalse(monsterCard.isMonster());
             else

@@ -1,5 +1,5 @@
 package at.technikum.player;
-import at.technikum.card.Card;
+import at.technikum.application.model.card.Card;
 import java.util.List;
 
 public class Player

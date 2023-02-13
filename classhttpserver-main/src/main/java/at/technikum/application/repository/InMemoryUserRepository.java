@@ -21,4 +21,24 @@ public class InMemoryUserRepository implements UserRepository {
                 .findFirst()
                 .orElse(null);
     }
+
+    @Override
+    public List<User> findAllUsers() {
+        return null;
+    }
+
+    @Override
+    public User registerUser(String username, String password) {
+        return null;
+    }
+
+    @Override
+    public User updateUserByUsername(String username) {
+        return null;
+    }
+
+    @Override
+    public void deleteUserById(int id) {
+
+    }
 }

@@ -3,12 +3,14 @@ package at.technikum;
 import at.technikum.application.endpoints.*;
 import at.technikum.application.router.*;
 import at.technikum.application.util.Pair;
-import at.technikum.card.ElementType;
+import at.technikum.application.model.card.ElementType;
 import at.technikum.game.Game;
 import at.technikum.http.HttpServer;
-import at.technikum.card.Card;
-import at.technikum.card.MonsterType;
+import at.technikum.application.model.card.Card;
+import at.technikum.application.model.card.MonsterType;
+import at.technikum.http.RequestContext;
 import at.technikum.player.Player;
+import java.sql.*;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -76,8 +78,36 @@ public class Main {
         } */
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args){
 
+        Connection con = null;
+        try {
+            con = DriverManager.getConnection("jdbc:postgresql://localhost:5432/swen1db",
+                    "swen1user","swen1pw");
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        if(con!=null)
+            System.out.println("Sucessfully connected to Database.");
+
+        String query = "select * from testtable";
+        try {
+            Statement smt = con.createStatement();
+            ResultSet rs = smt.executeQuery(query);
+            while(rs.next())
+            {
+                System.out.println(rs.getString("username"));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        try {
+            con.close();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
 
         var router = new Router();
 
@@ -124,9 +154,6 @@ public class Main {
 
         routeIdentifier = new RouteIdentifier("/tradings", "DELETE");
         router.registerRoute(new Pair<>(routeIdentifier, new TradingsDeleteEndpoint()));
-
-
-
 
 
 
