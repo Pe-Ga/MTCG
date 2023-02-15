@@ -1,3 +1,4 @@
+/*
 package at.technikum.application.repository;
 
 import at.technikum.application.model.User;
@@ -9,25 +10,45 @@ import java.util.List;
 public class UserRepositoryImpl implements UserRepository {
 
     @Override
-    public User findUserByUsername(String username) {
+    public User findUserByUsername(String name) {
         return null;
     }
+    */
+/*public User findUserByUsername(String username) throws SQLException {
+
+        User user = new User();
+        Connection connection = DriverManager
+                .getConnection("jdbc:postgresql://localhost:5432/swen1db",
+                        "swen1user","swen1pw");
+
+        try ( Statement stmt = connection.createStatement())
+        {
+            String query = "select * from \"User\" where userName=" + username;
+            ResultSet rs = stmt.executeQuery(query);
+            while(rs.next())
+            {
+                user.setUsername(rs.getString("userName"));
+                user.setUsername(rs.getString("userBio"));
+                user.setUsername(rs.getString("userImage"));
+            }
+
+        }
+        return user;
+    }*//*
+
 
     @Override
-    public List<User> findAllUsers()
-    {
+    public List<User> findAllUsers() throws SQLException {
         List<User> userList = new ArrayList<>();
-        Connection con = null;
-        try {
-            con = DriverManager.getConnection("jdbc:postgresql://localhost:5432/swen1db",
-                    "swen1user","swen1pw");
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
 
-        String query = "select * from \"User\" ";
-        try {
-            Statement smt = con.createStatement();
+
+        Connection connection = DriverManager
+                .getConnection("jdbc:postgresql://localhost:5432/swen1db",
+                "swen1user","swen1pw");
+
+        try (Statement smt = connection.createStatement())
+        {
+            String query = "select * from \"User\" ";
             ResultSet rs = smt.executeQuery(query);
             while(rs.next())
             {
@@ -35,21 +56,14 @@ public class UserRepositoryImpl implements UserRepository {
                 user.setUsername(rs.getString("userName"));
                 userList.add(user);
             }
+            rs.close();
         }
         catch (SQLException e)
         {
             throw new RuntimeException(e);
         }
 
-        try
-        {
-            con.close();
-        }
-        catch (SQLException e)
-        {
-            throw new RuntimeException(e);
-        }
-
+        connection.close();
         return userList;
     }
 
@@ -76,3 +90,4 @@ public class UserRepositoryImpl implements UserRepository {
 
 
 }
+*/

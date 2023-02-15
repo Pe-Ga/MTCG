@@ -13,6 +13,7 @@ import at.technikum.http.HttpStatus;
 import at.technikum.http.RequestContext;
 import at.technikum.http.Response;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,13 +27,13 @@ public class RestUserController implements Controller {
         this.userService = userService;
     }
 
-    public Response register(RequestContext requestContext) {
+    public Response register(RequestContext requestContext) throws SQLException {
         System.out.println("Body of register: " + requestContext.getBody());
         Credentials credentials = requestContext.getBodyAs(Credentials.class);
         return register(credentials);
     }
 
-    public Response register(Credentials credentials) {
+    public Response register(Credentials credentials) throws SQLException {
         User user = userService.findUserByUsername(credentials.getUsername());
         if (user != null) {
             throw new BadRequestException("User with username " + credentials.getUsername() + " already exists");

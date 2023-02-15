@@ -1,9 +1,12 @@
 package at.technikum;
 
+import at.technikum.application.config.DataSource;
+import at.technikum.application.config.DbConnector;
 import at.technikum.application.endpoints.*;
 import at.technikum.application.model.User;
+import at.technikum.application.repository.PostgresMessageRepository;
+import at.technikum.application.repository.PostgresUserRepository;
 import at.technikum.application.repository.UserRepository;
-import at.technikum.application.repository.UserRepositoryImpl;
 import at.technikum.application.router.*;
 import at.technikum.application.util.Pair;
 import at.technikum.application.model.card.ElementType;
@@ -13,6 +16,10 @@ import at.technikum.application.model.card.Card;
 import at.technikum.application.model.card.MonsterType;
 import at.technikum.http.RequestContext;
 import at.technikum.player.Player;
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
+import com.zaxxer.hikari.pool.HikariProxyConnection;
+
 import java.sql.*;
 
 import java.util.Arrays;
@@ -82,15 +89,14 @@ public class Main {
         } */
     }
 
-    public static void main(String[] args){
+    public static void main(String[] args) throws SQLException {
 
-        var userRepository = new UserRepositoryImpl();
+        DataSource ds = new DataSource();
 
-        for(User element : userRepository.findAllUsers())
-        {
-            System.out.println(element.getUsername());
-        }
+        var postgresUserRepository = new PostgresUserRepository();
+        postgresUserRepository.findUserByUsername("ingo");
 
+        
         var router = new Router();
 
         RouteIdentifier routeIdentifier;
@@ -136,10 +142,7 @@ public class Main {
 
         routeIdentifier = new RouteIdentifier("/tradings", "DELETE");
         router.registerRoute(new Pair<>(routeIdentifier, new TradingsDeleteEndpoint()));
-
-
-
-
+        
         var httpServer = new HttpServer(router);
         httpServer.start();
 

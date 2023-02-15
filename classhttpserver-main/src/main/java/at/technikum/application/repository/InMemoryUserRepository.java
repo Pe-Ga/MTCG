@@ -28,8 +28,8 @@ public class InMemoryUserRepository implements UserRepository {
     }
 
     @Override
-    public User registerUser(String username, String password) {
-        return null;
+    public boolean registerUser(String username, String password) {
+        return true;
     }
 
     @Override

@@ -8,6 +8,7 @@ import org.postgresql.shaded.com.ongres.scram.common.bouncycastle.pbkdf2.Strings
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.sql.SQLException;
 import java.util.*;
 
 public class HttpServer {
@@ -53,6 +54,8 @@ public class HttpServer {
                             response = new Response();
                             response.setBody(e.getMessage());
                             response.setHttpStatus(HttpStatus.INTERNAL_SERVER_ERROR);
+                        } catch (SQLException e) {
+                            throw new RuntimeException(e);
                         }
                     }
                     /*
@@ -77,7 +80,6 @@ public class HttpServer {
                     if(response.getHttpStatus() == null) {
                         response.setHttpStatus(HttpStatus.NO_CONTENT);
                     }
-
 
                     BufferedWriter w = new BufferedWriter(
                             new OutputStreamWriter(socket.getOutputStream()));
@@ -145,8 +147,6 @@ public class HttpServer {
                 urlParams.put(array[0], elements.contains("=") ? array[1] : null);
             }
         }
-
-
 
         // now introduce the RequestContext to the calculated values
         requestContext.setHttpVerb(verb);
