@@ -20,7 +20,7 @@ public class PostgresMessageRepository implements MessageRepository {
                 );
             """;
     private static final String QUERY_ALL_MESSAGES = """
-        SELECT id, content from messages
+        SELECT id, content from messagessss
     """;
 
     private final DbConnector dataSource;

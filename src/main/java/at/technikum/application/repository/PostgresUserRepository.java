@@ -1,6 +1,5 @@
 package at.technikum.application.repository;
 
-import at.technikum.application.config.DataSource;
 import at.technikum.application.config.DbConnector;
 import at.technikum.application.model.User;
 
@@ -12,7 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PostgresUserRepository implements UserRepository{
-
     private static final String FIND_BY_USERNAME = """
             SELECT * from User
             """;
@@ -46,9 +44,10 @@ public class PostgresUserRepository implements UserRepository{
 
     private final DbConnector dataSource;
 
-    public PostgresUserRepository() {
+    public PostgresUserRepository(DbConnector dataSource) {
         this.dataSource = dataSource;
-        try (PreparedStatement ps = dataSource.getConnection().prepareStatement(SETUP_TABLE)){
+        try (PreparedStatement ps = dataSource.getConnection()
+                .prepareStatement(SETUP_TABLE)){
             ps.execute();
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -58,7 +57,7 @@ public class PostgresUserRepository implements UserRepository{
     @Override
     public User findUserByUsername(String username) throws SQLException {
         User user = new User();
-        try ( Connection tx = DataSource.getInstance().getConnection()) {
+        try ( Connection tx = dataSource.getConnection()) {
             try ( PreparedStatement ps = tx.prepareStatement(FIND_BY_USERNAME)) {
                 ps.execute();
                 final ResultSet rs = ps.getResultSet();

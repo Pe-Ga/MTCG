@@ -3,6 +3,7 @@ package at.technikum;
 import at.technikum.application.config.DataSource;
 import at.technikum.application.config.DbConnector;
 import at.technikum.application.endpoints.*;
+import at.technikum.application.model.Message;
 import at.technikum.application.model.User;
 import at.technikum.application.repository.PostgresMessageRepository;
 import at.technikum.application.repository.PostgresUserRepository;
@@ -91,12 +92,22 @@ public class Main {
 
     public static void main(String[] args) throws SQLException {
 
-        DataSource ds = new DataSource();
+        DbConnector dataSource = DataSource.getInstance();
+        PostgresMessageRepository postgresMessageRepository = new PostgresMessageRepository(dataSource);
+        try
+        {
+            for(Message messages : postgresMessageRepository.getAllMessages())
+            {
+                System.out.println(messages);
+            }
 
-        var postgresUserRepository = new PostgresUserRepository();
-        postgresUserRepository.findUserByUsername("ingo");
+        }
+        catch (Exception e)
+        {
+            System.out.println(" [ ERROR ] ");
+        }
 
-        
+
         var router = new Router();
 
         RouteIdentifier routeIdentifier;

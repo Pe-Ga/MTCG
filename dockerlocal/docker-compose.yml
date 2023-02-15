@@ -1,0 +1,37 @@
+# Use postgres/example user/password credentials
+version: '3.1'
+
+services:
+  db-class-http:
+    image: postgres:15.1
+    restart: always
+    environment:
+      POSTGRES_USER: swen1user
+      POSTGRES_PASSWORD: swen1pw
+      POSTGRES_DB: swen1db
+    ports:
+      - '5432:5432'
+    volumes:
+      - db_class:/var/lib/postgresql/data
+
+#  testdb:
+#    image: postgres:15.1
+#    restart: always
+#    environment:
+#      POSTGRES_USER: swen1user
+#      POSTGRES_PASSWORD: swen1pw
+#      POSTGRES_DB: swen1dbtest
+#    ports:
+#      - '5432'
+#    volumes:
+#      - testdb2:/var/lib/postgresql/data
+  adminer:
+    image: adminer:4.8.1
+    restart: always
+    ports:
+      - '8080:8080'
+volumes:
+  db_class:
+    driver: local
+#  testdb2:
+#    driver: local

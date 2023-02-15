@@ -6,11 +6,12 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="classhttpserver" />
+        <module name="mtcg" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="classhttpserver" target="17" />
+      <module name="mtcg" target="17" />
     </bytecodeTargetLevel>
   </component>
 </project>
