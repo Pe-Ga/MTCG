@@ -25,11 +25,9 @@ public class UsersGetEndpoint implements Route{
 
         DbConnector dataSource = DataSource.getInstance();
         PostgresUserRepository postgresUserRepository =  new PostgresUserRepository(dataSource);
-
         var usr = postgresUserRepository.findUser(requestContext.getPathExtensions().get(1).substring(1));
 
         System.out.println(requestContext.extractToken());
-
         System.out.println(usr.getUserToken());
         System.out.println(usr.getUserTokenExpiration());
 
@@ -41,6 +39,7 @@ public class UsersGetEndpoint implements Route{
             response.setBody("User not found");
         }
 
+        // compares token provided in header and token persited in db
         if(usr.userNameExists() && usr.getUserToken().equals(requestContext.extractToken()))
         {
             // TODO implement jackson

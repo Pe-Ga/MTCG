@@ -106,6 +106,8 @@ public class RequestContext {
 
     public String extractToken()
     {
+        if (this.token == null || this.token.isEmpty())
+            return null;
         String[] strings = this.getToken().split(" ",2);
         return strings[1];
     }
