@@ -7,13 +7,16 @@ import java.util.List;
 
 public interface UserRepository {
 
-    User findUserByUsername(String username) throws SQLException;
+    User findUser(String username) throws SQLException;
     List<User> findAllUsers() throws SQLException;
-    boolean registerUser(String username, String password) throws SQLException;
+    boolean loginUser(String username, String password);
+    boolean loginIsValid(String username, String userpassword);
+    boolean registerUser(User user) throws SQLException;
     //Retrieves the user data for the username provided in the route.
     // Only the admin or the matching user
     // can successfully retrieve the data.
-    User updateUserByUsername(String username);
+    boolean updateUser(User user) throws SQLException;
+    User findUserByToken(String token)  throws SQLException;
     void deleteUserById(int id);
     void save(User user);
 

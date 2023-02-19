@@ -2,9 +2,13 @@ package at.technikum.application.model;
 
 import at.technikum.application.model.card.Card;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class User {
+    
+    private int userId;
     private String username;
     private String password;
 
@@ -22,13 +26,18 @@ public class User {
 
     private List<Card> collection;
 
+    private String userToken;
+
+    private Instant userTokenExpiration;
+
     public User() {
         this.username = username;
         this.password = password;
     }
 
-    public User(String username, String password, String realName, String bio, String image,
+    public User(int userId,String username, String password, String realName, String bio, String image,
                 int elo, int wins, int losses, List<Card> deck, List<Card> collection) {
+        this.userId = userId;
         this.username = username;
         this.password = password;
         this.realName = realName;
@@ -126,6 +135,37 @@ public class User {
 
     public void setCollection(List<Card> collection) {
         this.collection = collection;
+    }
+
+    public String getUserToken() {
+        return userToken;
+    }
+
+    public Instant getUserTokenExpiration() {
+        return userTokenExpiration;
+    }
+
+    public void setUserTokenExpiration(Instant userTokenExpiration) {
+        this.userTokenExpiration = userTokenExpiration;
+    }
+
+    public boolean userNameExists()
+    {
+        return this.username != null;
+    }
+
+    public void setUserToken(String token) {
+        this.userToken = token;
+    }
+
+
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 /*
     @Override

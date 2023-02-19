@@ -2,7 +2,7 @@ package at.technikum.http;
 
 public class Response {
 
-    private Header header;
+    private Header header = new Header();
 
     private HttpStatus httpStatus;
     private String body;

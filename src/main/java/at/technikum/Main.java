@@ -1,13 +1,6 @@
 package at.technikum;
 
-import at.technikum.application.config.DataSource;
-import at.technikum.application.config.DbConnector;
 import at.technikum.application.endpoints.*;
-import at.technikum.application.model.Message;
-import at.technikum.application.model.User;
-import at.technikum.application.repository.PostgresMessageRepository;
-import at.technikum.application.repository.PostgresUserRepository;
-import at.technikum.application.repository.UserRepository;
 import at.technikum.application.router.*;
 import at.technikum.application.util.Pair;
 import at.technikum.application.model.card.ElementType;
@@ -15,15 +8,10 @@ import at.technikum.game.Game;
 import at.technikum.http.HttpServer;
 import at.technikum.application.model.card.Card;
 import at.technikum.application.model.card.MonsterType;
-import at.technikum.http.RequestContext;
 import at.technikum.player.Player;
-import com.zaxxer.hikari.HikariConfig;
-import com.zaxxer.hikari.HikariDataSource;
-import com.zaxxer.hikari.pool.HikariProxyConnection;
 
 import java.sql.*;
 
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -92,21 +80,6 @@ public class Main {
 
     public static void main(String[] args) throws SQLException {
 
-        DbConnector dataSource = DataSource.getInstance();
-        PostgresMessageRepository postgresMessageRepository = new PostgresMessageRepository(dataSource);
-        try
-        {
-            for(Message messages : postgresMessageRepository.getAllMessages())
-            {
-                System.out.println(messages);
-            }
-
-        }
-        catch (Exception e)
-        {
-            System.out.println(" [ ERROR ] ");
-        }
-
 
         var router = new Router();
 
@@ -120,6 +93,9 @@ public class Main {
 
         routeIdentifier = new RouteIdentifier("/users", "PUT");
         router.registerRoute(new Pair<>(routeIdentifier, new UsersPutEndpoint()));
+
+        routeIdentifier = new RouteIdentifier("/sessions", "POST");
+        router.registerRoute(new Pair<>(routeIdentifier, new SessionsPostEndpoint()));
 
         routeIdentifier = new RouteIdentifier("/packages", "POST");
         router.registerRoute(new Pair<>(routeIdentifier, new PackagesPostEndpoint()));

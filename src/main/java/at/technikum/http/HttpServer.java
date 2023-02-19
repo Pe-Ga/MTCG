@@ -52,7 +52,7 @@ public class HttpServer {
                             response.setHttpStatus(HttpStatus.BAD_REQUEST);
                         } catch (IllegalStateException e) {
                             response = new Response();
-                            response.setBody(e.getMessage());
+                            response.setBody(" [ Internal server error ] ");
                             response.setHttpStatus(HttpStatus.INTERNAL_SERVER_ERROR);
                         } catch (SQLException e) {
                             throw new RuntimeException(e);

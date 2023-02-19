@@ -13,6 +13,6 @@ public class UserService {
     }
 
     public User findUserByUsername(String username) throws SQLException {
-        return userRepository.findUserByUsername(username);
+        return userRepository.findUser(username);
     }
 }

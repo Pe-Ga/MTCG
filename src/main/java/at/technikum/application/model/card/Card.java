@@ -8,6 +8,8 @@ public class Card
 
     private int baseDamage;
 
+    public Card(){};
+
     public Card(MonsterType monsterType, ElementType elementType, int baseDamage)
     {
         this.monsterType = monsterType;
