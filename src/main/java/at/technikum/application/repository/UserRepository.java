@@ -8,6 +8,7 @@ import java.util.List;
 public interface UserRepository {
 
     User findUser(String username) throws SQLException;
+    User findUserByToken(String username) throws SQLException;
     List<User> findAllUsers() throws SQLException;
     boolean loginUser(String username, String password);
     boolean loginIsValid(String username, String userpassword);
@@ -16,7 +17,6 @@ public interface UserRepository {
     // Only the admin or the matching user
     // can successfully retrieve the data.
     boolean updateUser(User user) throws SQLException;
-    User findUserByToken(String token)  throws SQLException;
     void deleteUserById(int id);
     void save(User user);
 

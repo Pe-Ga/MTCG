@@ -52,29 +52,10 @@ public class PostgresUserRepository implements UserRepository {
             Where "userId" = ?
             """;
 
-    private static final String SETUP_TABLE = """
-            create table public."User"
-            (
-                "userId"              serial
-                    constraint "User_pk"
-                        primary key,
-                "userName"            varchar                                           not null,
-                "userPassword"        varchar                                           not null,
-                "userBio"             varchar,
-                "userImage"           varchar,
-                "userRealname"        varchar default 'userRealname'::character varying not null,
-                elo                   integer default 100                               not null,
-                wins                  integer default 0                                 not null,
-                losses                integer default 0                                 not null,
-                "userToken"           varchar(255),
-                "userTokenExpiration" timestamp
-            );
-                        
-            alter table public."User"
-                owner to swen1user;
-                        
-                        
+    private static final String FIND_USER_BY_TOKEN = """
+            SELECT * from "User" Where "userToken" = ?
             """;
+
 
     private static final String FIND_ALL_USERS = """
             SELECT * from "User" 
@@ -88,10 +69,6 @@ public class PostgresUserRepository implements UserRepository {
 
     private static final String UPDATE_ACCESS_TOKEN = """
         UPDATE "User" SET "userToken" = ?, "userTokenExpiration" = ? WHERE "userName" = ?
-        """;
-
-    private static final String FIND_BY_TOKEN = """
-        SELECT * from "User" WHERE userToken = ?
         """;
 
     private final DbConnector dataSource;
@@ -116,6 +93,86 @@ public class PostgresUserRepository implements UserRepository {
             try ( PreparedStatement ps = tx.prepareStatement(FIND_BY_USERNAME))
             {
                 ps.setString(1, username);
+                ps.execute();
+                final ResultSet rs = ps.getResultSet();
+                if(rs.next())
+                {
+                    user = new User();
+                    user.setUserId((rs.getInt("userId")));
+                    user.setUsername(rs.getString("userName"));
+                    user.setPassword(rs.getString("userPassword"));
+                    user.setBio(rs.getString("userBio"));
+                    user.setImage(rs.getString("userImage"));
+                    user.setRealName(rs.getString("userRealname"));
+                    user.setElo(Integer.parseInt(rs.getString("elo")));
+                    user.setWins(Integer.parseInt(rs.getString("wins")));
+                    user.setLosses(Integer.parseInt(rs.getString("losses")));
+                    user.setUserToken(rs.getString("userToken"));
+                    user.setUserTokenExpiration(rs.getTimestamp("userTokenExpiration").toInstant());
+                    user.setCoins(rs.getInt("userCoins"));
+                }
+            }
+            if (user != null)
+            {
+                try (PreparedStatement psGetDeck = tx.prepareStatement(GET_DECK)) {
+                    psGetDeck.setInt(1, user.getUserId());
+                    psGetDeck.execute();
+                    final ResultSet rs = psGetDeck.getResultSet();
+                    while (rs.next()) {
+                        try (PreparedStatement pstmt = tx.prepareStatement(FIND_CARD_BELONGING_TO_DECK)) {
+                            pstmt.setInt(1, rs.getInt("card1"));
+                            pstmt.setInt(2, rs.getInt("card2"));
+                            pstmt.setInt(3, rs.getInt("card3"));
+                            pstmt.setInt(4, rs.getInt("card4"));
+                            pstmt.execute();
+                            final ResultSet resultSet = pstmt.getResultSet();
+                            while (resultSet.next()) {
+                                Card card = new Card();
+                                card.setMonsterType(MonsterType.valueOf(resultSet.getString("cardMonsterType")));
+                                card.setElementType(ElementType.valueOf(resultSet.getString("cardelementType")));
+                                card.setBaseDamage(resultSet.getInt("cardDamage"));
+                                deck.add(card);
+                            }
+                        }
+                        user.setDeck(deck);
+                    }
+                }
+            }
+            try (PreparedStatement ps = tx.prepareStatement(GET_COLLECTION))
+            {
+                if(user != null)
+                {
+                    ps.setInt(1, user.getUserId());
+                    ps.execute();
+                    final ResultSet rs_collection = ps.getResultSet();
+                    while(rs_collection.next())
+                    {
+                        Card card = new Card();
+                        card.setMonsterType(MonsterType.valueOf(rs_collection.getString("cardMonsterType")));
+                        card.setElementType(ElementType.valueOf(rs_collection.getString("cardelementType")));
+                        card.setBaseDamage(rs_collection.getInt("cardDamage"));
+                        collection.add(card);
+                    }
+                    user.setCollection(collection);
+                }
+            }
+        }
+        catch (SQLException e)
+        {
+            throw new IllegalStateException("DB query failed", e);
+        }
+        return user;
+    }
+
+    @Override
+    public User findUserByToken(String userToken) throws SQLException {
+        User user = null;
+        List <Card> collection = new ArrayList<Card>();
+        List <Card> deck = new ArrayList<Card>();
+        try ( Connection tx = dataSource.getConnection()) {
+            try ( PreparedStatement ps = tx.prepareStatement(FIND_USER_BY_TOKEN))
+            {
+                ps.setString(1, userToken);
                 ps.execute();
                 final ResultSet rs = ps.getResultSet();
                 if(rs.next())
@@ -218,29 +275,6 @@ public class PostgresUserRepository implements UserRepository {
             }
         }
         return true;
-    }
-
-    @Override
-    public User findUserByToken(String token)  throws SQLException{
-        User user = null;
-        try (Connection tx = dataSource.getConnection()) {
-            try (PreparedStatement ps = tx.prepareStatement(FIND_BY_TOKEN)) {
-                ps.setString(1, token);
-                ps.execute();
-                final ResultSet rs = ps.getResultSet();
-                while (rs.next()) {
-                    user = new User();
-                    user.setUsername(rs.getString("userName"));
-                    user.setBio(rs.getString("userBio"));
-                    user.setImage(rs.getString("userImage"));
-                    user.setUserToken(rs.getString("userToken"));         //set expiration date to 15mins from now
-                   // user.setAccessTokenExpiration(rs.getTimestamp("userTokenExpiration").toLocalDateTime());
-                }
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        return user;
     }
 
     @Override
