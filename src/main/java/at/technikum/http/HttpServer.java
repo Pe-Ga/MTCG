@@ -166,6 +166,13 @@ public class HttpServer {
         } while (true);
         requestContext.setHeaders(headerList);
 
+        for(Header header : headerList)
+        {
+            if(header.getName().equals("authorization"))
+                requestContext.setToken(header.getValue());
+        }
+
+
         int contentLength = requestContext.getContentLength();
         char[] buffer = new char[contentLength];
         bufferedReader.read(buffer, 0, contentLength);

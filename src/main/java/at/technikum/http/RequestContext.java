@@ -9,11 +9,11 @@ import java.util.Map;
 public class RequestContext {
 
     private static final String CONTENT_LENGTH_HEADER_NAME = "Content-Length";
+    private String token;
     private String httpVerb;
     private String path;
     private List<String> pathExtensions;
     private List<Header> headers;
-
     private Map<String, String > urlParameters;
     private String body;
 
@@ -59,6 +59,18 @@ public class RequestContext {
         this.urlParameters = urlParameters;
     }
 
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    public ObjectMapper getObjectMapper() {
+        return objectMapper;
+    }
+
     public int getContentLength() {
         return headers.stream()
                 .filter(header -> CONTENT_LENGTH_HEADER_NAME.equals(header.getName()))
@@ -67,7 +79,6 @@ public class RequestContext {
                 .map(Integer::parseInt)
                 .orElse(0);
     }
-
     public String getBody() {
         return body;
     }
@@ -84,7 +95,6 @@ public class RequestContext {
             throw new BadRequestException(e.getMessage());
         }
     }
-
     public void print() {
         System.out.println("HTTP-Verb: " + httpVerb);
         System.out.println("Path " + path);
@@ -93,4 +103,12 @@ public class RequestContext {
         System.out.println("Headers: " + headers);
         System.out.println("Body: " + body);
     }
+
+    public String extractToken()
+    {
+        String[] strings = this.getToken().split(" ",2);
+        return strings[1];
+    }
+
+
 }
