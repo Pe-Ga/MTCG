@@ -87,10 +87,11 @@ public class Card
             }
             return this.baseDamage * factor;
     }
-
     @Override
-    public String toString()
-    {
-        return this.elementType.name() + " "+ this.monsterType.name() + " ( " + this.baseDamage + " Damage )";
+    public String toString() {
+        String elementTypeString = (this.elementType != null) ? this.elementType.name() : "null";
+        String monsterTypeString = (this.monsterType != null) ? this.monsterType.name() : "null";
+        String baseDamageString = (this.baseDamage != 0) ? String.valueOf((this.baseDamage)) : "null";
+        return elementTypeString + monsterTypeString + " (" + baseDamageString + " Damage)";
     }
 }

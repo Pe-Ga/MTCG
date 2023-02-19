@@ -15,7 +15,7 @@ import java.util.List;
 
 import static at.technikum.application.util.AccessTokenGenerator.generateAccessToken;
 
-public class PostgresUserRepository implements UserRepository{
+public class PostgresUserRepository implements UserRepository {
     private static final String FIND_BY_USERNAME = """
             SELECT * from "User" WHERE "userName" = ?
             """;
@@ -133,48 +133,50 @@ public class PostgresUserRepository implements UserRepository{
                     user.setUserTokenExpiration(rs.getTimestamp("userTokenExpiration").toInstant());
                 }
             }
-            /*
-            try (PreparedStatement ps = tx.prepareStatement(GET_DECK))
-
+            if (user != null)
             {
-                ps.setInt(1, user.getUserId());
-                ps.execute();
-                final ResultSet rs = ps.getResultSet();
-                while(rs.next())
-                {
-                      pstmt.setInt(1, rs.getInt("card1"));
-                      pstmt.setInt(2, rs.getInt("card2"));
-                      pstmt.setInt(3, rs.getInt("card3"));
-                      pstmt.setInt(4, rs.getInt("card4"));
-                      pstmt.execute();
-                      final ResultSet resultSet = pstmt.getResultSet();
-                      while (resultSet.next())
-                      {
-                          Card card = new Card();
-                          card.setMonsterType(MonsterType.valueOf(rs.getString("cardMonsterType")));
-                          card.setElementType(ElementType.valueOf(rs.getString("cardElementType")));
-                          card.setBaseDamage(rs.getInt("cardDamage"));
-                          deck.add(card);
-                      }
-                      user.setDeck(deck);
-                  }
+                try (PreparedStatement psGetDeck = tx.prepareStatement(GET_DECK)) {
+                    psGetDeck.setInt(1, user.getUserId());
+                    psGetDeck.execute();
+                    final ResultSet rs = psGetDeck.getResultSet();
+                    while (rs.next()) {
+                        try (PreparedStatement pstmt = tx.prepareStatement(FIND_CARD_BELONGING_TO_DECK)) {
+                            pstmt.setInt(1, rs.getInt("card1"));
+                            pstmt.setInt(2, rs.getInt("card2"));
+                            pstmt.setInt(3, rs.getInt("card3"));
+                            pstmt.setInt(4, rs.getInt("card4"));
+                            pstmt.execute();
+                            final ResultSet resultSet = pstmt.getResultSet();
+                            while (resultSet.next()) {
+                                Card card = new Card();
+                                card.setMonsterType(MonsterType.valueOf(resultSet.getString("cardMonsterType")));
+                                card.setElementType(ElementType.valueOf(resultSet.getString("cardelementType")));
+                                card.setBaseDamage(resultSet.getInt("cardDamage"));
+                                deck.add(card);
+                            }
+                        }
+                        user.setDeck(deck);
+                    }
                 }
             }
             try (PreparedStatement ps = tx.prepareStatement(GET_COLLECTION))
             {
-                ps.setInt(1, user.getUserId());
-                ps.execute();
-                final ResultSet rs = ps.getResultSet();
-                while(rs.next())
+                if(user != null)
                 {
-                    Card card = new Card();
-                    card.setMonsterType(MonsterType.valueOf(rs.getString("cardMonsterType")));
-                    card.setElementType(ElementType.valueOf(rs.getString("cardElementType")));
-                    card.setBaseDamage(rs.getInt("cardDamage"));
-                    collection.add(card);
+                    ps.setInt(1, user.getUserId());
+                    ps.execute();
+                    final ResultSet rs_collection = ps.getResultSet();
+                    while(rs_collection.next())
+                    {
+                        Card card = new Card();
+                        card.setMonsterType(MonsterType.valueOf(rs_collection.getString("cardMonsterType")));
+                        card.setElementType(ElementType.valueOf(rs_collection.getString("cardelementType")));
+                        card.setBaseDamage(rs_collection.getInt("cardDamage"));
+                        collection.add(card);
+                    }
+                    user.setCollection(collection);
                 }
-                user.setCollection(collection);
-            }*/
+            }
         }
         catch (SQLException e)
         {

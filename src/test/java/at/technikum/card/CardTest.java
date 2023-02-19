@@ -31,10 +31,10 @@ public class CardTest
     {
 
         Card nullCard     = null;
-        Card monsterCard1 = new Card(MonsterType.Goblin, ElementType.Fire  ,10);
-        Card monsterCard2 = new Card(MonsterType.Knight, ElementType.Fire  ,20);
-        Card fireCard     = new Card(MonsterType.Spell , ElementType.Fire  ,20);
-        Card waterCard    = new Card(MonsterType.Spell , ElementType.Water ,20);
+        Card monsterCard1 = new Card(MonsterType.Goblin, ElementType.Fire,10);
+        Card monsterCard2 = new Card(MonsterType.Knight, ElementType.Fire,20);
+        Card fireCard     = new Card(MonsterType.Spell , ElementType.Fire,20);
+        Card waterCard    = new Card(MonsterType.Spell , ElementType.Water,20);
         Card normalCard   = new Card(MonsterType.Spell , ElementType.Normal,20);
 
         float halvedDamage  = 0.5f;
