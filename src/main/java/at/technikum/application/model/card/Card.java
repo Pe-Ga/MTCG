@@ -3,9 +3,9 @@ package at.technikum.application.model.card;
 public class Card
 {
 
+    private int id;
     private MonsterType monsterType;
     private ElementType elementType;
-
     private int baseDamage;
 
     public Card(){};
@@ -45,6 +45,14 @@ public class Card
     public void setBaseDamage(int baseDamage)
     {
         this.baseDamage = baseDamage;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public boolean isMonster()
@@ -94,4 +102,12 @@ public class Card
         String baseDamageString = (this.baseDamage != 0) ? String.valueOf((this.baseDamage)) : "null";
         return elementTypeString + monsterTypeString + " (" + baseDamageString + " Damage)";
     }
+
+    public String onlyNameToString()
+    {
+        String elementTypeString = (this.elementType != null) ? this.elementType.name() : "null";
+        String monsterTypeString = (this.monsterType != null) ? this.monsterType.name() : "null";
+        return elementTypeString+monsterTypeString;
+    }
+
 }
