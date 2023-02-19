@@ -47,7 +47,8 @@ public class PostgresUserRepository implements UserRepository {
             "wins" = ?,
             "losses" = ?,
             "userToken" = ?,
-            "userTokenExpiration" = ?
+            "userTokenExpiration" = ?,
+            "userCoins" = ?
             Where "userId" = ?
             """;
 
@@ -131,6 +132,7 @@ public class PostgresUserRepository implements UserRepository {
                     user.setLosses(Integer.parseInt(rs.getString("losses")));
                     user.setUserToken(rs.getString("userToken"));
                     user.setUserTokenExpiration(rs.getTimestamp("userTokenExpiration").toInstant());
+                    user.setCoins(rs.getInt("userCoins"));
                 }
             }
             if (user != null)
@@ -258,6 +260,7 @@ public class PostgresUserRepository implements UserRepository {
                 ps.setString(9, user.getUserToken());
                 ps.setTimestamp(10, Timestamp.from(user.getUserTokenExpiration()));
                 ps.setInt(11, user.getUserId());
+                ps.setInt(12,user.getCoins());
                 ps.execute();
             }
         }

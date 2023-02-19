@@ -3,7 +3,6 @@ package at.technikum.application.model;
 import at.technikum.application.model.card.Card;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.util.List;
 
 public class User {
@@ -30,13 +29,15 @@ public class User {
 
     private Instant userTokenExpiration;
 
+    private int coins;
+
     public User() {
         this.username = username;
         this.password = password;
     }
 
-    public User(int userId,String username, String password, String realName, String bio, String image,
-                int elo, int wins, int losses, List<Card> deck, List<Card> collection) {
+    public User(int userId, String username, String password, String realName, String bio, String image,
+                int elo, int wins, int losses, List<Card> deck, List<Card> collection, int coins) {
         this.userId = userId;
         this.username = username;
         this.password = password;
@@ -48,6 +49,7 @@ public class User {
         this.losses = losses;
         this.deck = deck;
         this.collection = collection;
+        this.coins = coins;
     }
 
     public User(String username, String password, String bio, String image) {
@@ -147,6 +149,14 @@ public class User {
 
     public void setUserTokenExpiration(Instant userTokenExpiration) {
         this.userTokenExpiration = userTokenExpiration;
+    }
+
+    public int getCoins() {
+        return coins;
+    }
+
+    public void setCoins(int coins) {
+        this.coins = coins;
     }
 
     public boolean userNameExists()
