@@ -28,10 +28,8 @@ public class TransactionsPostEndpoint implements Route {
         DbConnector dataSource = DataSource.getInstance();
         PostgresUserRepository postgresUserRepository =  new PostgresUserRepository(dataSource);
         PostgresCardRepository cardRepository = new PostgresCardRepository(dataSource);
-        //var usr = postgresUserRepository.findUser(requestContext.getPathExtensions().get(1).substring(1));
-        var usr = postgresUserRepository.findUser("peter");
-        // TODO where does the user come from? TOKEN ?!?!?!?
-        // TODO findByToken in Repo
+        var usr = postgresUserRepository.findUserByToken(requestContext.extractToken());
+
         boolean has_valid_token = usr.getUserToken().equals(requestContext.extractToken());
         boolean has_enough_coins = usr.getCoins() >= 5;
         System.out.println(has_enough_coins);
