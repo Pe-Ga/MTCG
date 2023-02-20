@@ -25,12 +25,16 @@ public class StatsGetEndpoint implements Route {
 
         DbConnector dataSource = DataSource.getInstance();
         PostgresUserRepository postgresUserRepository =  new PostgresUserRepository(dataSource);
-
         //extract token from request and send request to db in order to retrieve user data
         var usr = postgresUserRepository.findUserByToken(requestContext.extractToken());
-        boolean has_valid_token = usr.getUserToken().equals(requestContext.extractToken());
 
-        if(has_valid_token)
+        if(usr == null || !usr.getUserToken().equals(requestContext.extractToken())) {
+
+            response.setHttpStatus(HttpStatus.UNAUTHORIZED);
+            response.setBody("Access token is missing or invalid");
+
+        }
+        else
         {
             ObjectMapper objectMapper = new ObjectMapper();
             ObjectNode userNode = objectMapper.createObjectNode();
@@ -45,11 +49,7 @@ public class StatsGetEndpoint implements Route {
             response.setHttpStatus(HttpStatus.OK);
             response.setBody(userJson);
         }
-        else
-        {
-            response.setHttpStatus(HttpStatus.UNAUTHORIZED);
-            response.setBody("Access token is missing or invalid");
-        }
+
         return response;
     }
 }
