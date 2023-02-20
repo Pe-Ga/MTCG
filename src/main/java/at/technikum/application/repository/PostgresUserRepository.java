@@ -208,6 +208,7 @@ public class PostgresUserRepository implements UserRepository {
                             final ResultSet resultSet = pstmt.getResultSet();
                             while (resultSet.next()) {
                                 Card card = new Card();
+                                card.setId(resultSet.getInt("cardId"));
                                 card.setMonsterType(MonsterType.valueOf(resultSet.getString("cardMonsterType")));
                                 card.setElementType(ElementType.valueOf(resultSet.getString("cardelementType")));
                                 card.setBaseDamage(resultSet.getInt("cardDamage"));

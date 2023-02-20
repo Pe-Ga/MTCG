@@ -2,9 +2,11 @@ package at.technikum.application.endpoints;
 
 import at.technikum.application.config.DataSource;
 import at.technikum.application.config.DbConnector;
+import at.technikum.application.model.User;
 import at.technikum.application.model.card.Card;
 import at.technikum.application.model.card.ElementType;
 import at.technikum.application.model.card.MonsterType;
+import at.technikum.application.model.card.Package;
 import at.technikum.application.repository.PostgresCardRepository;
 import at.technikum.application.repository.PostgresUserRepository;
 import at.technikum.application.router.Route;
@@ -28,29 +30,49 @@ public class TransactionsPostEndpoint implements Route {
         DbConnector dataSource = DataSource.getInstance();
         PostgresUserRepository postgresUserRepository =  new PostgresUserRepository(dataSource);
         PostgresCardRepository cardRepository = new PostgresCardRepository(dataSource);
-        var usr = postgresUserRepository.findUserByToken(requestContext.extractToken());
+        User usr;
+        usr = postgresUserRepository.findUserByToken(requestContext.extractToken());
 
-        boolean has_valid_token = usr.getUserToken().equals(requestContext.extractToken());
-        boolean has_enough_coins = usr.getCoins() >= 5;
-        System.out.println(has_enough_coins);
-        System.out.println(has_valid_token);
+        boolean has_valid_token;
+        boolean has_enough_coins;
 
-        var card = new Card(MonsterType.Spell, ElementType.Fire, 60);
-        card.setId(90);
+        Package cardPackage = new Package();
+
+
+/*        System.out.println(has_enough_coins);
+        System.out.println(has_valid_token);*/
+
+        var card = new Card(MonsterType.Spell, ElementType.Fire, 99);
+        card.setId(100);
         System.out.println(">>");
-        System.out.println(usr.getCoins());
+        //System.out.println(usr.getCoins());
 
         // TODO Create packages class and
-        if (usr != null)
+        if (false)
         {
             response.getHeader().setName("Content-Type");
             response.getHeader().setValue("text/plain; charset=utf-8");
             response.setHttpStatus(HttpStatus.NOT_FOUND);
             response.setBody("No card package available for buying");
+            return response;
+
         }
+
+        if (usr == null)
+        {
+            response.getHeader().setName("Content-Type");
+            response.getHeader().setValue("text/plain; charset=utf-8");
+            response.setHttpStatus(HttpStatus.NOT_FOUND);
+            response.setBody("User not found");
+            return response;
+        }
+
+         has_valid_token = usr.getUserToken().equals(requestContext.extractToken());
+         has_enough_coins = usr.getCoins() >= 5;
 
         if (!has_valid_token)
         {
+
             response.getHeader().setName("Content-Type");
             response.getHeader().setValue("text/plain; charset=utf-8");
             response.setHttpStatus(HttpStatus.UNAUTHORIZED);
@@ -74,7 +96,7 @@ public class TransactionsPostEndpoint implements Route {
             // upodate users coins
             postgresUserRepository.updateUser(usr);
             //save new card with userId in DB
-            cardRepository.saveCard(card, usr);
+            cardRepository.saveCard(card, usr.getUserId());
 
             // map
             ObjectMapper objectMapper = new ObjectMapper();

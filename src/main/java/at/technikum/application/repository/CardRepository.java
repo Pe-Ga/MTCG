@@ -5,5 +5,5 @@ import at.technikum.application.model.card.Card;
 
 public interface CardRepository {
 
-    void saveCard(Card card, User user);
+    void saveCard(Card card, int userId);
 }

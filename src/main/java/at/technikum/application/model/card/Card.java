@@ -10,11 +10,18 @@ public class Card
 
     public Card(){};
 
-    public Card(MonsterType monsterType, ElementType elementType, int baseDamage)
+    public Card(int id,MonsterType monsterType, ElementType elementType, int baseDamage)
     {
+        this.id = id;
         this.monsterType = monsterType;
         this.elementType = elementType;
         this.baseDamage  =  baseDamage;
+    }
+
+    public Card(MonsterType monsterType, ElementType elementType, int baseDamage) {
+        this.monsterType = monsterType;
+        this.elementType = elementType;
+        this.baseDamage = baseDamage;
     }
 
     public MonsterType getMonsterType()
@@ -102,6 +109,16 @@ public class Card
         String baseDamageString = (this.baseDamage != 0) ? String.valueOf((this.baseDamage)) : "null";
         return elementTypeString + monsterTypeString + " (" + baseDamageString + " Damage)";
     }
+
+/*
+    public String toStringWithId() {
+        int id = (this.id != 0) ? this.id : 0;
+        String elementTypeString = (this.elementType != null) ? this.elementType.name() : "null";
+        String monsterTypeString = (this.monsterType != null) ? this.monsterType.name() : "null";
+        String baseDamageString = (this.baseDamage != 0) ? String.valueOf((this.baseDamage)) : "null";
+        return elementTypeString + monsterTypeString + " (" + baseDamageString + " Damage)";
+    }
+*/
 
     public String onlyNameToString()
     {

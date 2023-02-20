@@ -23,7 +23,7 @@ public class PostgresCardRepository implements CardRepository{
     }
 
     @Override
-    public void saveCard(Card card, User user) {
+    public void saveCard(Card card, int userId) {
         try (Connection tx = dataSource.getConnection())
         {
             try (PreparedStatement ps = tx.prepareStatement(SAVE_CARD))
@@ -31,7 +31,7 @@ public class PostgresCardRepository implements CardRepository{
                 ps.setString(1, String.valueOf(card.getMonsterType()));
                 ps.setInt(2, card.getBaseDamage());
                 ps.setString(3, String.valueOf(card.getElementType()));
-                ps.setInt(4, user.getUserId());
+                ps.setInt(4, userId);
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);

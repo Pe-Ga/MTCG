@@ -103,7 +103,7 @@ public class Main {
         routeIdentifier = new RouteIdentifier("/transactions", "POST");
         router.registerRoute(new Pair<>(routeIdentifier, new TransactionsPostEndpoint()));
 
-        routeIdentifier = new RouteIdentifier("/card", "GET");
+        routeIdentifier = new RouteIdentifier("/cards", "GET");
         router.registerRoute(new Pair<>(routeIdentifier, new CardsGetEndpoint()));
 
         routeIdentifier = new RouteIdentifier("/deck", "GET");
