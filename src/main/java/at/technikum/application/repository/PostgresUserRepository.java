@@ -9,7 +9,6 @@ import at.technikum.application.model.card.MonsterType;
 import java.sql.*;
 import java.time.Duration;
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,8 +56,9 @@ public class PostgresUserRepository implements UserRepository {
             """;
 
 
-    private static final String FIND_ALL_USERS = """
+    private static final String FIND_ALL_USERS_ORDERED_BY_ELO = """
             SELECT * from "User" 
+            Order By "elo" desc
             """;
 
     private static final String REGISTER_USER = """
@@ -247,14 +247,17 @@ public class PostgresUserRepository implements UserRepository {
 
     @Override
     public List<User> findAllUsers() throws SQLException {
-        User user = new User();
         List<User> userList = new ArrayList<>();
         try ( Connection tx = dataSource.getConnection()) {
-            try ( PreparedStatement ps = tx.prepareStatement(FIND_ALL_USERS)) {
+            try ( PreparedStatement ps = tx.prepareStatement(FIND_ALL_USERS_ORDERED_BY_ELO)) {
                 ps.execute();
                 final ResultSet rs = ps.getResultSet();
                 while (rs.next()) {
+                    User user = new User();
                     user.setUsername((rs.getString("userName")));
+                    user.setElo(rs.getInt("elo"));
+                    user.setWins(rs.getInt("wins"));
+                    user.setLosses(rs.getInt("losses"));
                     userList.add(user);
                 }
             }
