@@ -3,8 +3,8 @@ package at.technikum.application.endpoints;
 import at.technikum.application.config.DataSource;
 import at.technikum.application.config.DbConnector;
 import at.technikum.application.model.card.Card;
-import at.technikum.application.repository.PostgresCardRepository;
-import at.technikum.application.repository.PostgresUserRepository;
+import at.technikum.application.repository.CardRepository;
+import at.technikum.application.repository.UserRepository;
 import at.technikum.application.router.Route;
 import at.technikum.http.Header;
 import at.technikum.http.HttpStatus;
@@ -15,7 +15,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -29,8 +28,8 @@ public class CardsGetEndpoint implements Route {
         response.setHeader(new Header());
 
         DbConnector dataSource = DataSource.getInstance();
-        PostgresUserRepository postgresUserRepository =  new PostgresUserRepository(dataSource);
-        PostgresCardRepository cardRepository = new PostgresCardRepository(dataSource);
+        UserRepository postgresUserRepository =  new UserRepository(dataSource);
+        CardRepository cardRepository = new CardRepository(dataSource);
 
         var usr = postgresUserRepository.findUserByToken(requestContext.extractToken());
 

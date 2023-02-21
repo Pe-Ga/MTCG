@@ -1,7 +1,4 @@
 package at.technikum.application.repository;
 
-public interface GameRepository {
-
-
-
+public class GameRepository {
 }

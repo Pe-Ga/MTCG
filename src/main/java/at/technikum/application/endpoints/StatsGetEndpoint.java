@@ -2,7 +2,7 @@ package at.technikum.application.endpoints;
 
 import at.technikum.application.config.DataSource;
 import at.technikum.application.config.DbConnector;
-import at.technikum.application.repository.PostgresUserRepository;
+import at.technikum.application.repository.UserRepository;
 import at.technikum.application.router.Route;
 import at.technikum.http.Header;
 import at.technikum.http.HttpStatus;
@@ -24,7 +24,7 @@ public class StatsGetEndpoint implements Route {
         response.getHeader().setValue("text/plain; charset=utf-8");
 
         DbConnector dataSource = DataSource.getInstance();
-        PostgresUserRepository postgresUserRepository =  new PostgresUserRepository(dataSource);
+        UserRepository postgresUserRepository =  new UserRepository(dataSource);
         //extract token from request and send request to db in order to retrieve user data
         var usr = postgresUserRepository.findUserByToken(requestContext.extractToken());
 

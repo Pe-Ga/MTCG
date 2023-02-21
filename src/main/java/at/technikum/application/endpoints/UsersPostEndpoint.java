@@ -4,23 +4,18 @@ import at.technikum.application.config.DataSource;
 import at.technikum.application.config.DbConnector;
 import at.technikum.application.model.Credentials;
 import at.technikum.application.model.User;
-import at.technikum.application.repository.PostgresUserRepository;
 import at.technikum.application.repository.UserRepository;
+import at.technikum.application.repository.IUserRepository;
 import at.technikum.application.router.Route;
-import at.technikum.http.Header;
 import at.technikum.http.HttpStatus;
 import at.technikum.http.RequestContext;
 import at.technikum.http.Response;
-import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 
 import java.sql.SQLException;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.List;
 
 import static at.technikum.application.util.AccessTokenGenerator.generateAccessToken;
 
@@ -35,13 +30,13 @@ public class UsersPostEndpoint implements Route {
 
         ObjectMapper mapper = new ObjectMapper();
         DbConnector dataSource = DataSource.getInstance();
-        UserRepository postgresUserRepository = new PostgresUserRepository(dataSource);
+        IUserRepository postgresIUserRepository = new UserRepository(dataSource);
 
         try
         {
 
             var request = mapper.readValue(requestContext.getBody(), Credentials.class);
-            boolean user_already_exists = postgresUserRepository.findUser(request.getUsername()) != null;
+            boolean user_already_exists = postgresIUserRepository.findUser(request.getUsername()) != null;
 
             if(!user_already_exists) {
                 User user = new User();
@@ -52,7 +47,7 @@ public class UsersPostEndpoint implements Route {
                 user.setUserToken(userToken);
                 user.setUserTokenExpiration(expiration);
 
-                postgresUserRepository.registerUser(user);
+                postgresIUserRepository.registerUser(user);
 
                 response.getHeader().setName("Content-Type");
                 response.getHeader().setValue("text/plain; charset=utf-8");

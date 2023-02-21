@@ -2,8 +2,8 @@ package at.technikum.application.endpoints;
 
 import at.technikum.application.config.DataSource;
 import at.technikum.application.config.DbConnector;
-import at.technikum.application.repository.PostgresUserRepository;
 import at.technikum.application.repository.UserRepository;
+import at.technikum.application.repository.IUserRepository;
 import at.technikum.application.router.Route;
 import at.technikum.http.Header;
 import at.technikum.http.HttpStatus;
@@ -23,7 +23,7 @@ public class UsersGetEndpoint implements Route{
         response.setHeader(new Header());
 
         DbConnector dataSource = DataSource.getInstance();
-        UserRepository postgresUserRepository =  new PostgresUserRepository(dataSource);
+        IUserRepository postgresUserRepository =  new UserRepository(dataSource);
         var usr = postgresUserRepository.findUser(requestContext.getPathExtensions().get(1).substring(1));
 
         if(usr == null) {

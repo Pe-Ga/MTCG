@@ -4,8 +4,8 @@ import at.technikum.application.config.DataSource;
 import at.technikum.application.config.DbConnector;
 import at.technikum.application.model.Credentials;
 import at.technikum.application.model.User;
-import at.technikum.application.repository.PostgresUserRepository;
 import at.technikum.application.repository.UserRepository;
+import at.technikum.application.repository.IUserRepository;
 import at.technikum.application.router.Route;
 import at.technikum.http.HttpStatus;
 import at.technikum.http.RequestContext;
@@ -29,14 +29,14 @@ public class SessionsPostEndpoint implements Route {
         User user = null;
 
         DbConnector dataSource = DataSource.getInstance();
-        UserRepository postgresUserRepository = new PostgresUserRepository(dataSource);
+        IUserRepository postgresIUserRepository = new UserRepository(dataSource);
 
         try
         {
             ObjectMapper mapper = new ObjectMapper();
             var request = mapper.readValue(requestContext.getBody(), Credentials.class);
             // Step 1: Query the user from Database
-            user = postgresUserRepository.findUser(request.getUsername());
+            user = postgresIUserRepository.findUser(request.getUsername());
             System.out.println(">>> " + user.getUserTokenExpiration());
 
             // Step 2: Check whether user was found in Database
@@ -85,7 +85,7 @@ public class SessionsPostEndpoint implements Route {
 
             // Step 4.3: let the UserRepository persist the refreshed user Object in the database
             // TODO postgresUserRepository.updateUser(user);
-            postgresUserRepository.updateUser(user);
+            postgresIUserRepository.updateUser(user);
 
             // Step 4.4: send back a httpp 200 response with the token in its body
             response.getHeader().setName("Content-Type");

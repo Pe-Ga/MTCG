@@ -3,7 +3,7 @@ package at.technikum.application.endpoints;
 import at.technikum.application.config.DataSource;
 import at.technikum.application.config.DbConnector;
 import at.technikum.application.model.RequestBody;
-import at.technikum.application.repository.PostgresUserRepository;
+import at.technikum.application.repository.UserRepository;
 import at.technikum.application.router.Route;
 import at.technikum.http.Header;
 import at.technikum.http.HttpStatus;
@@ -13,8 +13,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class UsersPutEndpoint implements Route {
     @Override
@@ -26,7 +24,7 @@ public class UsersPutEndpoint implements Route {
         response.getHeader().setValue("text/plain; charset=utf-8");
 
         DbConnector dataSource = DataSource.getInstance();
-        PostgresUserRepository postgresUserRepository =  new PostgresUserRepository(dataSource);
+        UserRepository postgresUserRepository =  new UserRepository(dataSource);
         var usr = postgresUserRepository.findUser(requestContext.getPathExtensions().get(1).substring(1));
 
         ObjectMapper mapper = new ObjectMapper();

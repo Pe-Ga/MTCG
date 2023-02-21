@@ -7,8 +7,8 @@ import at.technikum.application.model.card.Card;
 import at.technikum.application.model.card.ElementType;
 import at.technikum.application.model.card.MonsterType;
 import at.technikum.application.model.card.Package;
-import at.technikum.application.repository.PostgresCardRepository;
-import at.technikum.application.repository.PostgresUserRepository;
+import at.technikum.application.repository.CardRepository;
+import at.technikum.application.repository.UserRepository;
 import at.technikum.application.router.Route;
 import at.technikum.http.Header;
 import at.technikum.http.HttpStatus;
@@ -28,8 +28,8 @@ public class TransactionsPostEndpoint implements Route {
         response.setHeader(new Header());
 
         DbConnector dataSource = DataSource.getInstance();
-        PostgresUserRepository postgresUserRepository =  new PostgresUserRepository(dataSource);
-        PostgresCardRepository cardRepository = new PostgresCardRepository(dataSource);
+        UserRepository postgresUserRepository =  new UserRepository(dataSource);
+        CardRepository cardRepository = new CardRepository(dataSource);
         User usr;
         usr = postgresUserRepository.findUserByToken(requestContext.extractToken());
 

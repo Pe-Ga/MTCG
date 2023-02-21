@@ -4,6 +4,7 @@ import at.technikum.application.model.card.Card;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Objects;
 
 public class User {
     
@@ -182,5 +183,10 @@ public class User {
             return false;
 
         return this.getUserToken().equals(token) && Instant.now().isAfter(this.getUserTokenExpiration());
+    }
+
+    public boolean isAdmin()
+    {
+       return Objects.equals(this.getUserToken(), "admin") && Objects.equals(this.getUsername(), "admin");
     }
 }

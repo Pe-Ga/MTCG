@@ -2,7 +2,6 @@ package at.technikum.application.controller;
 
 import at.technikum.application.model.Credentials;
 import at.technikum.application.model.User;
-import at.technikum.application.repository.UserRepository;
 import at.technikum.application.router.Controller;
 import at.technikum.application.router.Route;
 import at.technikum.application.router.RouteIdentifier;

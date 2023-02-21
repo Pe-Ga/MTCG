@@ -6,15 +6,18 @@ public class Card
     private int id;
     private MonsterType monsterType;
     private ElementType elementType;
+
+    private int ownerId;
     private int baseDamage;
 
     public Card(){};
 
-    public Card(int id,MonsterType monsterType, ElementType elementType, int baseDamage)
+    public Card(int id, MonsterType monsterType, ElementType elementType, int ownerId, int baseDamage)
     {
         this.id = id;
         this.monsterType = monsterType;
         this.elementType = elementType;
+        this.ownerId = ownerId;
         this.baseDamage  =  baseDamage;
     }
 
@@ -60,6 +63,14 @@ public class Card
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public int getOwnerId() {
+        return ownerId;
+    }
+
+    public void setOwnerId(int ownerId) {
+        this.ownerId = ownerId;
     }
 
     public boolean isMonster()

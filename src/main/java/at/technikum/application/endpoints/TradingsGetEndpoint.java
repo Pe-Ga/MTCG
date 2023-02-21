@@ -3,7 +3,7 @@ package at.technikum.application.endpoints;
 import at.technikum.application.config.DataSource;
 import at.technikum.application.config.DbConnector;
 import at.technikum.application.model.User;
-import at.technikum.application.repository.PostgresUserRepository;
+import at.technikum.application.repository.UserRepository;
 import at.technikum.application.router.Route;
 import at.technikum.http.Header;
 import at.technikum.http.HttpStatus;
@@ -25,7 +25,7 @@ public class TradingsGetEndpoint implements Route {
         try
         {
             DbConnector dataSource = DataSource.getInstance();
-            PostgresUserRepository postgresUserRepository = new PostgresUserRepository(dataSource);
+            UserRepository postgresUserRepository = new UserRepository(dataSource);
             var response = new Response();
             response.setHeader(new Header());
             var usr = postgresUserRepository.findUserByToken(requestContext.extractToken());
