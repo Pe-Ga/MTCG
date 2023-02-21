@@ -30,7 +30,6 @@ public class SessionsPostEndpoint implements Route {
 
         DbConnector dataSource = DataSource.getInstance();
         UserRepository postgresUserRepository = new PostgresUserRepository(dataSource);
-        // TODO: Usenrmae und Passwort aus JSON entpcken
 
         try
         {

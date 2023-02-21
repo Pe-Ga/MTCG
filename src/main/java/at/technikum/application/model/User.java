@@ -168,8 +168,6 @@ public class User {
         this.userToken = token;
     }
 
-
-
     public int getUserId() {
         return userId;
     }
@@ -177,11 +175,12 @@ public class User {
     public void setUserId(int userId) {
         this.userId = userId;
     }
-/*
-    @Override
-    public String toString()
+
+    public boolean tokenIsInvalid(String token)
     {
-        return this.getUsername();
+        if (token == null)
+            return false;
+
+        return this.getUserToken().equals(token) && Instant.now().isAfter(this.getUserTokenExpiration());
     }
-*/
 }

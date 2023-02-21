@@ -297,8 +297,8 @@ public class PostgresUserRepository implements UserRepository {
                 ps.setInt(8, user.getLosses());
                 ps.setString(9, user.getUserToken());
                 ps.setTimestamp(10, Timestamp.from(user.getUserTokenExpiration()));
-                ps.setInt(11, user.getUserId());
-                ps.setInt(12,user.getCoins());
+                ps.setInt(11,user.getCoins());
+                ps.setInt(12, user.getUserId());
                 ps.execute();
             }
         }
@@ -364,18 +364,6 @@ public class PostgresUserRepository implements UserRepository {
         }
         return false;
     }
-
-/*
-    @Override
-    public boolean userExists (String username)
-    {
-        User user = new User();
-        try (Connection tx = dataSource.getConnection())
-        {
-            try (PreparedStatement ps = tx.prepareStatement())
-        }
-    }
-*/
 
     @Override
     public void deleteUserById(int id) {

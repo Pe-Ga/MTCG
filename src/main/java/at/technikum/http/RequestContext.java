@@ -108,6 +108,7 @@ public class RequestContext {
     {
         if (this.token == null || this.token.isEmpty())
             return null;
+
         String[] strings = this.getToken().split(" ",2);
         return strings[1];
     }

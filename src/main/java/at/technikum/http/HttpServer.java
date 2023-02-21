@@ -15,84 +15,100 @@ public class HttpServer {
 
     private final Router router;
 
+    private final String MTCG_SERVER_BANNER = """
+             _____ ______    _________   ________   ________          ___  ___   _________   _________   ________        ________   _______    ________   ___      ___  _______    ________    \s
+            |\\   _ \\  _   \\ |\\___   ___\\|\\   ____\\ |\\   ____\\        |\\  \\|\\  \\ |\\___   ___\\|\\___   ___\\|\\   __  \\      |\\   ____\\ |\\  ___ \\  |\\   __  \\ |\\  \\    /  /||\\  ___ \\  |\\   __  \\   \s
+            \\ \\  \\\\\\__\\ \\  \\\\|___ \\  \\_|\\ \\  \\___| \\ \\  \\___|        \\ \\  \\\\\\  \\\\|___ \\  \\_|\\|___ \\  \\_|\\ \\  \\|\\  \\     \\ \\  \\___|_\\ \\   __/| \\ \\  \\|\\  \\\\ \\  \\  /  / /\\ \\   __/| \\ \\  \\|\\  \\  \s
+             \\ \\  \\\\|__| \\  \\    \\ \\  \\  \\ \\  \\     \\ \\  \\  ___       \\ \\   __  \\    \\ \\  \\      \\ \\  \\  \\ \\   ____\\     \\ \\_____  \\\\ \\  \\_|/__\\ \\   _  _\\\\ \\  \\/  / /  \\ \\  \\_|/__\\ \\   _  _\\ \s
+              \\ \\  \\    \\ \\  \\    \\ \\  \\  \\ \\  \\____ \\ \\  \\|\\  \\       \\ \\  \\ \\  \\    \\ \\  \\      \\ \\  \\  \\ \\  \\___|      \\|____|\\  \\\\ \\  \\_|\\ \\\\ \\  \\\\  \\|\\ \\    / /    \\ \\  \\_|\\ \\\\ \\  \\\\  \\|\s
+               \\ \\__\\    \\ \\__\\    \\ \\__\\  \\ \\_______\\\\ \\_______\\       \\ \\__\\ \\__\\    \\ \\__\\      \\ \\__\\  \\ \\__\\           ____\\_\\  \\\\ \\_______\\\\ \\__\\\\ _\\ \\ \\__/ /      \\ \\_______\\\\ \\__\\\\ _\\\s
+                \\|__|     \\|__|     \\|__|   \\|_______| \\|_______|        \\|__|\\|__|     \\|__|       \\|__|   \\|__|          |\\_________\\\\|_______| \\|__|\\|__| \\|__|/        \\|_______| \\|__|\\|__|
+                                                                                                                           \\|_________|                                                        \s
+                                                                                                                                                                                               \s
+                                                                                                                                                                                               \s
+            """;
+
     public HttpServer(Router router) {
         this.router = router;
     }
 
     public void start() {
+        System.out.println(MTCG_SERVER_BANNER);
         try (ServerSocket serverSocket = new ServerSocket(10001)) {
             while (true) {
-                try (final Socket socket = serverSocket.accept()) {
-                    BufferedReader br = new BufferedReader(
-                            new InputStreamReader
-                                    (socket.getInputStream()));
+                final Socket socket = serverSocket.accept();
+                new Thread(() -> {
+                    try {
+                        BufferedReader br = new BufferedReader(
+                                new InputStreamReader(socket.getInputStream()));
 
-                    final RequestContext requestContext = parseInput(br);
-                    System.out.println("Thread: " + Thread.currentThread().getName());
-                    requestContext.print();
-                    final RouteIdentifier routeIdentifier = new RouteIdentifier(
-                            requestContext.getPathExtensions().get(0),
-                            requestContext.getHttpVerb()
-                    );
-                    final Route route = router.findRoute(routeIdentifier);
-                    Response response;
-                    if( route == null)
-                    {
-                        response = new Response();
-                        response.setBody("Not found: Path " + requestContext.getPath().split("\\?")[0]);
-                        response.setHttpStatus(HttpStatus.NOT_FOUND);
-                    }
-                    else
-                    {
+                        final RequestContext requestContext = parseInput(br);
+                        System.out.println("Thread: " + Thread.currentThread().getName());
+                        requestContext.print();
+                        final RouteIdentifier routeIdentifier = new RouteIdentifier(
+                                requestContext.getPathExtensions().get(0),
+                                requestContext.getHttpVerb()
+                        );
+                        final Route route = router.findRoute(routeIdentifier);
+                        Response response;
+                        if (route == null) {
+                            response = new Response();
+                            response.setBody("Not found: Path " + requestContext.getPath().split("\\?")[0]);
+                            response.setHttpStatus(HttpStatus.NOT_FOUND);
+                        } else {
+                            try {
+                                response = route.process(requestContext);
+                            } catch (BadRequestException badRequestException) {
+                                response = new Response();
+                                response.setBody(badRequestException.getMessage());
+                                response.setHttpStatus(HttpStatus.BAD_REQUEST);
+                            } catch (IllegalStateException e) {
+                                response = new Response();
+                                response.setBody(" [ Internal server error ] ");
+                                response.setHttpStatus(HttpStatus.INTERNAL_SERVER_ERROR);
+                            } catch (SQLException e) {
+                                throw new RuntimeException(e);
+                            }
+                        }
+
+                        if (response == null) {
+                            response = new Response();
+                        }
+
+                        if (response.getHeader() == null) {
+                            response.setHeader(new Header());
+                            response.getHeader().setName("Content-Type");
+                            response.getHeader().setValue("text/plain; charset=utf-8");
+                        }
+
+                        if (response.getBody() == null) {
+                            response.setBody("");
+                        }
+
+                        if (response.getHttpStatus() == null) {
+                            response.setHttpStatus(HttpStatus.NO_CONTENT);
+                        }
+
+                        BufferedWriter w = new BufferedWriter(
+                                new OutputStreamWriter(socket.getOutputStream()));
+                        w.write("HTTP/1.1 ");
+                        w.write(response.getHttpStatus().getStatusCode() + " ");
+                        w.write(response.getHttpStatus().getStatusMessage());
+                        w.write("\r\n");
+                        w.write(response.getHeader().getName() + ": " + response.getHeader().getValue() + "; charset=utf-8\r\n");
+                        w.write("\r\n");
+                        w.write(response.getBody());
+                        w.flush();
+                    } catch (IOException e) {
+                        System.err.println(e);
+                    } finally {
                         try {
-                            response = route.process(requestContext);
-                        } catch (BadRequestException badRequestException) {
-                            response = new Response();
-                            response.setBody(badRequestException.getMessage());
-                            response.setHttpStatus(HttpStatus.BAD_REQUEST);
-                        } catch (IllegalStateException e) {
-                            response = new Response();
-                            response.setBody(" [ Internal server error ] ");
-                            response.setHttpStatus(HttpStatus.INTERNAL_SERVER_ERROR);
-                        } catch (SQLException e) {
-                            throw new RuntimeException(e);
+                            socket.close();
+                        } catch (IOException e) {
+                            System.err.println(e);
                         }
                     }
-                    /*
-                    Header header = new Header();
-                    header.setName("Content-Type");
-                    header.setValue("application/json");
-                    */
-                    if(response == null) {
-                        response = new Response();
-                    }
-
-                    if(response.getHeader() == null) {
-                        response.setHeader(new Header());
-                        response.getHeader().setName("Content-Type");
-                        response.getHeader().setValue("text/plain; charset=utf-8");
-                    }
-
-                    if(response.getBody() == null) {
-                        response.setBody("");
-                    }
-
-                    if(response.getHttpStatus() == null) {
-                        response.setHttpStatus(HttpStatus.NO_CONTENT);
-                    }
-
-                    BufferedWriter w = new BufferedWriter(
-                            new OutputStreamWriter(socket.getOutputStream()));
-                    // 200 OK
-                    w.write("HTTP/1.1 ");
-                    w.write(response.getHttpStatus().getStatusCode() + " ");
-                    w.write(response.getHttpStatus().getStatusMessage());
-                    w.write("\r\n");
-                    w.write(response.getHeader().getName() + ": " + response.getHeader().getValue() + "; charset=utf-8\r\n");
-                    w.write("\r\n");
-                    w.write(response.getBody());
-                    w.flush();
-                }
+                }).start();
             }
         } catch (IOException e) {
             System.err.println(e);
