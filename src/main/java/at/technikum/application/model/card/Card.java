@@ -113,6 +113,67 @@ public class Card
             }
             return this.baseDamage * factor;
     }
+
+    boolean isSpecialCase(Card card)
+    {
+        if(card.getMonsterType() == MonsterType.Goblin && this.monsterType == MonsterType.Dragon)
+        {
+            return true;
+        }
+
+        if (card.getMonsterType() == MonsterType.Wizzard && this.monsterType == MonsterType.Orc)
+        {
+            return true;
+        }
+
+        if (card.getMonsterType() == MonsterType.Knight && (this.monsterType == MonsterType.Spell && this.elementType == ElementType.Water))
+        {
+            return true;
+        }
+
+        if (card.getMonsterType() == MonsterType.Kraken && this.monsterType == MonsterType.Spell)
+        {
+            return true;
+        }
+
+        if ((card.getMonsterType() == MonsterType.Elve && card.getElementType() == ElementType.Fire) && this.monsterType == MonsterType.Dragon)
+        {
+            return true;
+        }
+
+    return false;
+    }
+
+    boolean specialCaseWon(Card card)
+    {
+        if(card.getMonsterType() == MonsterType.Goblin && this.monsterType == MonsterType.Dragon)
+        {
+            return true;
+        }
+
+        if (card.getMonsterType() == MonsterType.Wizzard && this.monsterType == MonsterType.Orc)
+        {
+            return false;
+        }
+
+        if (card.getMonsterType() == MonsterType.Knight && (this.monsterType == MonsterType.Spell && this.elementType == ElementType.Water))
+        {
+            return true;
+        }
+
+        if (card.getMonsterType() == MonsterType.Kraken && this.monsterType == MonsterType.Spell)
+        {
+            return false;
+        }
+
+        if ((card.getMonsterType() == MonsterType.Elve && card.getElementType() == ElementType.Fire) && this.monsterType == MonsterType.Dragon)
+        {
+            return false;
+        }
+
+        return false;
+    }
+
     @Override
     public String toString() {
         String elementTypeString = (this.elementType != null) ? this.elementType.name() : "null";
@@ -120,16 +181,6 @@ public class Card
         String baseDamageString = (this.baseDamage != 0) ? String.valueOf((this.baseDamage)) : "null";
         return elementTypeString + monsterTypeString + " (" + baseDamageString + " Damage)";
     }
-
-/*
-    public String toStringWithId() {
-        int id = (this.id != 0) ? this.id : 0;
-        String elementTypeString = (this.elementType != null) ? this.elementType.name() : "null";
-        String monsterTypeString = (this.monsterType != null) ? this.monsterType.name() : "null";
-        String baseDamageString = (this.baseDamage != 0) ? String.valueOf((this.baseDamage)) : "null";
-        return elementTypeString + monsterTypeString + " (" + baseDamageString + " Damage)";
-    }
-*/
 
     public String onlyNameToString()
     {

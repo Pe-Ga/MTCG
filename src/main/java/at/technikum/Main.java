@@ -4,7 +4,7 @@ import at.technikum.application.endpoints.*;
 import at.technikum.application.router.*;
 import at.technikum.application.util.Pair;
 import at.technikum.application.model.card.ElementType;
-import at.technikum.game.Game;
+import at.technikum.game.Battle;
 import at.technikum.http.HttpServer;
 import at.technikum.application.model.card.Card;
 import at.technikum.application.model.card.MonsterType;
@@ -42,40 +42,6 @@ public class Main {
         Player player1 = new Player("Peter", deck1, null);
         Player player2 = new Player("Ingo", deck2,null);
 
-        Game game1 = new Game(player1,player2);
-
-        System.out.println("Card won:");
-        Card card_test = game1.foo(deck1,deck2);
-        System.out.println(card_test.toString());
-
-
-
-
-
-
-
-
-        /*
-        UserService userService = new UserService(new InMemoryUserRepository());
-        RestUserController restUserController = new RestUserController(userService);
-
-        Router router = new Router();
-        restUserController.listRoutes()
-                .forEach(router::registerRoute);
-
-        HttpServer httpServer = new HttpServer(router);
-        httpServer.start();
-        */
-
-
-        /* try {
-            ServerSocket server = new ServerSocket();
-        } catch (IOException exception) {
-            System.err.println(exception);
-        } finally {
-            // Optional
-            System.out.println("Finally");
-        } */
     }
 
     public static void main(String[] args) throws SQLException {

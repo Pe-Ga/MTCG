@@ -189,4 +189,17 @@ public class User {
     {
        return Objects.equals(this.getUserToken(), "admin") && Objects.equals(this.getUsername(), "admin");
     }
+
+    public void setStatsWin()
+    {
+        this.setElo( getElo() + 3);
+        this.setWins( getWins() + 1 );
+    }
+
+    public void setStatsLoss()
+    {
+        this.setElo( getElo() - 5 );
+        this.setLosses( getLosses() +1 );
+    }
+
 }

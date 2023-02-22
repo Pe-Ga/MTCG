@@ -60,7 +60,6 @@ public class PackagesPostEndpoint implements Route {
                     }
                 }
             }
-                System.out.println(usr.isAdmin());
 
                 response.getHeader().setName("Content-Type");
                 response.getHeader().setValue("text/plain; charset=utf-8");

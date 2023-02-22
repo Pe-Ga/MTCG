@@ -10,7 +10,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 
-public class GameTest
+public class BattleTest
 {
 
     @Test
@@ -22,8 +22,8 @@ public class GameTest
         deck1.add(new Card(MonsterType.Spell, ElementType.Normal, 1));
         deck1.add(new Card(MonsterType.Knight, ElementType.Fire, 1));
 
-        assertNotNull(Game.drawCard(deck1));
-        assertNull(Game.drawCard(null));
-        assertNull(Game.drawCard(new LinkedList<Card>()));
+        assertNotNull(Battle.drawCard(deck1));
+        assertNull(Battle.drawCard(null));
+        assertNull(Battle.drawCard(new LinkedList<Card>()));
     }
 }
