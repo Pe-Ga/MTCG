@@ -32,10 +32,10 @@ public class User {
 
     private int coins;
 
-    public User() {
+/*    public User() {
         this.username = username;
         this.password = password;
-    }
+    }*/
 
     public User(int userId, String username, String password, String realName, String bio, String image,
                 int elo, int wins, int losses, List<Card> deck, List<Card> collection, int coins) {
@@ -61,6 +61,19 @@ public class User {
     }
 
     public String getUsername() {
+        if(this.getElo() > 103 && this.getElo() < 115)
+        {
+            return "_xxX" + username + "Xxx_";
+        }
+        else if (this.getElo() >= 115 && this.getElo() < 130 )
+        {
+            return "-=##@" + username + "@##=-";
+        }
+        else if (this.getElo() > 130)
+        {
+            return "<<||" + username + "||>>";
+        }
+
         return username;
     }
 
@@ -159,12 +172,7 @@ public class User {
     public void setCoins(int coins) {
         this.coins = coins;
     }
-
-    public boolean userNameExists()
-    {
-        return this.username != null;
-    }
-
+    
     public void setUserToken(String token) {
         this.userToken = token;
     }
