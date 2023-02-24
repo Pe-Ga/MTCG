@@ -179,7 +179,7 @@ public class Card
         String elementTypeString = (this.elementType != null) ? this.elementType.name() : "null";
         String monsterTypeString = (this.monsterType != null) ? this.monsterType.name() : "null";
         String baseDamageString = (this.baseDamage != 0) ? String.valueOf((this.baseDamage)) : "null";
-        return elementTypeString + monsterTypeString + " (" + baseDamageString + " Damage)";
+        return elementTypeString + monsterTypeString + " |  " + baseDamageString+ " : ";
     }
 
     public String onlyNameToString()

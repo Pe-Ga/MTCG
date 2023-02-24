@@ -46,6 +46,7 @@ public class BattlesPostEndpoint implements Route
                 // get battle report from Lobby and remove it there
                 String battleReport = requestContext.getLobby().getBattleLog().remove(usr);
                 //TODO UPDATE USER
+                postgresUserRepository.updateUser(usr);
                 // assemble response for client
                 response.getHeader().setName("Content-Type");
                 response.getHeader().setValue("text/plain; charset=utf-8");

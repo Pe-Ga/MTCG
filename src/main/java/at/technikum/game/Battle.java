@@ -54,10 +54,15 @@ public class Battle
 
     public String determineRoundsWinner()
     {
-        Card card1 = drawCard(this.user1.getDeck()); // TODO: cards in some tests were null!! check!
+        Card card1 = drawCard(this.user1.getDeck());
         Card card2 = drawCard(this.user2.getDeck());
 
-        String battleReport = card1.toString() + " vs " + card2.toString() + " => ";
+        if (card1 == null || card2 == null)
+            return user1 + " vs. " + user2 + "\nBattle aborted. Reason: No cards in a user's deck.";
+
+        StringBuilder tableBuilder = new StringBuilder();
+        tableBuilder.append(String.format("%-18s|%-18s|%-18s|%-18s|%-18s|%-18s|\n", "Card 1", "Base damage", "Effective Damage", "Card 2", "Base damage", "Effective Damage"));
+        tableBuilder.append(String.format("%-18s|%-18s|%-18.2f|%-18s|%-18s|%-18.2f|\n", card1.onlyNameToString(), card1.getBaseDamage(), card1.calculatedDamage(card2), card2.onlyNameToString(), card2.getBaseDamage(), card2.calculatedDamage(card1)));
 
         // TODO check special case
 
@@ -73,16 +78,16 @@ public class Battle
         {
             winner.getDeck().add(card1);
             winner.getDeck().add(card2);
-            battleReport += winner + " wins.";
+            tableBuilder.append(winner.getUsername() + " wins this round.");
         }
         else
         {
             this.user1.getDeck().add(card1);
             this.user2.getDeck().add(card2);
-            battleReport += "It's a Draw.";
+            tableBuilder.append("It's a Draw.");
         }
 
-        return battleReport;
+        return tableBuilder.toString();
     }
 
     public void addCardToDeck (Card card, User user)
@@ -92,41 +97,44 @@ public class Battle
 
     public String fightBattle()
     {
-        String battleReport = "";
+        StringBuilder battleReport = new StringBuilder();
         int roundCounter = 0;
 
-        //List<Card> originalDeck1 = new ArrayList<Card>();
-        //List<Card> originalDeck2 = new ArrayList<Card>();
+        List<Card> originalDeck1 = new ArrayList<>();
+        List<Card> originalDeck2 = new ArrayList<>();
 
-        ///Collections.copy(originalDeck1, user1.getDeck());
-        //Collections.copy(originalDeck2, user2.getDeck());
+        originalDeck1.addAll(user1.getDeck());
+        originalDeck2.addAll(user2.getDeck());
 
+        battleReport.append("    ").append(user1).append("    VS    ").append(user2).append("\n");
         do
         {
             roundCounter++;
-            battleReport += (determineRoundsWinner() + "\n");
-        } while (roundCounter == 100 || user1.getDeck().isEmpty() || user2.getDeck().isEmpty());
+            battleReport.append("Round: " + roundCounter + "\n").append(determineRoundsWinner()).append("\n");
+        } while ((!user1.getDeck().isEmpty() && !user2.getDeck().isEmpty()) && roundCounter <= 100);
 
         if (user1.getDeck().isEmpty())
         {
             user1.setStatsLoss();
             user2.setStatsWin();
-            battleReport += user2.getUsername() + " won the battle.";
+            battleReport.append(user2 + " won the battle.");
         }
         else if (user2.getDeck().isEmpty())
         {
             user2.setStatsLoss();
             user1.setStatsWin();
-            battleReport += user1.getUsername() + " won the battle.";
+            battleReport.append(user1 + " won the battle.");
         }
         else
         {
-            battleReport += "Draw.";
+            battleReport.append("Draw.");
         }
 
-        //user1.setDeck(originalDeck1);
-        //user2.setDeck(originalDeck2);
+        user1.setDeck(originalDeck1);
+        user2.setDeck(originalDeck2);
 
-        return battleReport;
+        System.out.println(battleReport);
+
+        return battleReport.toString();
     }
 }

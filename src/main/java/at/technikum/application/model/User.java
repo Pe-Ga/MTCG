@@ -59,19 +59,6 @@ public class User {
     }
 
     public String getUsername() {
-        if(this.getElo() > 103 && this.getElo() < 115)
-        {
-            return "_xxX" + username + "Xxx_";
-        }
-        else if (this.getElo() >= 115 && this.getElo() < 130 )
-        {
-            return "-=##@" + username + "@##=-";
-        }
-        else if (this.getElo() > 130)
-        {
-            return "<<||" + username + "||>>";
-        }
-
         return username;
     }
 
@@ -211,7 +198,29 @@ public class User {
     @Override
     public String toString()
     {
-        return this.username == null ? "" : this.username;
+        if (this.username != null)
+        {
+            if(this.elo > 103 && this.elo < 115)
+            {
+                return "_xxX" + username + "Xxx_";
+            }
+            else if (this.elo >= 115 && this.elo < 130 )
+            {
+                return "-=##@" + username + "@##=-";
+            }
+            else if (this.elo > 130)
+            {
+                return "<<||" + username + "||>>";
+            }
+            else
+            {
+                return this.username;
+            }
+        }
+        else
+        {
+            return "";
+        }
     }
 
     @Override
