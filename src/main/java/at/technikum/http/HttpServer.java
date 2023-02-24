@@ -3,6 +3,7 @@ package at.technikum.http;
 import at.technikum.application.router.Route;
 import at.technikum.application.router.RouteIdentifier;
 import at.technikum.application.router.Router;
+import at.technikum.game.Lobby;
 import org.postgresql.shaded.com.ongres.scram.common.bouncycastle.pbkdf2.Strings;
 
 import java.io.*;
@@ -14,6 +15,7 @@ import java.util.*;
 public class HttpServer {
 
     private final Router router;
+    private Lobby my_mtcg_lobby = new Lobby();
 
     private final String MTCG_SERVER_BANNER = """
              _____ ______    _________   ________   ________          ___  ___   _________   _________   ________        ________   _______    ________   ___      ___  _______    ________    \s
@@ -34,6 +36,8 @@ public class HttpServer {
 
     public void start() {
         System.out.println(MTCG_SERVER_BANNER);
+        // Start processes of self-moderated Lobby in a new Thread
+        new Thread(this.my_mtcg_lobby).start();
         try (ServerSocket serverSocket = new ServerSocket(10001)) {
             while (true) {
                 final Socket socket = serverSocket.accept();
@@ -43,6 +47,7 @@ public class HttpServer {
                                 new InputStreamReader(socket.getInputStream()));
 
                         final RequestContext requestContext = parseInput(br);
+                        requestContext.setLobby(my_mtcg_lobby);
                         System.out.println("Thread: " + Thread.currentThread().getName());
                         requestContext.print();
                         final RouteIdentifier routeIdentifier = new RouteIdentifier(

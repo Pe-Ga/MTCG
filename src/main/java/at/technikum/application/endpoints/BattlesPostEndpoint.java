@@ -14,62 +14,51 @@ import at.technikum.game.Battle;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
-public class BattlesPostEndpoint implements Route {
+public class BattlesPostEndpoint implements Route
+{
     @Override
     public Response process(RequestContext requestContext) throws SQLException {
-
-        final int LOBBY_TIMEOUT = 10;
-        final List<User> lobbyUsers = new ArrayList<>();
-
         var response = new Response();
-        response.setHeader(new Header());
-
         DbConnector dataSource = DataSource.getInstance();
         UserRepository postgresUserRepository =  new UserRepository(dataSource);
 
+        //final int LOBBY_TIMEOUT = 10;
         var usr = postgresUserRepository.findUserByToken(requestContext.extractToken());
 
-        if(usr == null || !usr.getUserToken().equals(requestContext.extractToken())) {
+        if(usr == null || usr.tokenIsInvalid(requestContext.extractToken())) {
 
             response.setHttpStatus(HttpStatus.UNAUTHORIZED);
             response.setBody("Access token is missing or invalid");
         }
         else
         {
-            lobbyUsers.add(usr);
-            List<Card> tempDeck = usr.getDeck();
-            List<String> battleLog = new ArrayList<>();
-            if (lobbyUsers.size() == 2)
+            // add user to queue in the lobby
+            System.out.println("Endpoint will now add user " + usr + " to queue in the Lobby.");
+            if (requestContext.getLobby().addParticipant(usr))
             {
-                Battle battle = new Battle(lobbyUsers.get(0), lobbyUsers.get(1));
-                battleLog = battle.fightBattle();
+                // wait for battle to complete
+                while (!requestContext.getLobby().getBattleLog().containsKey(usr));
 
-                if (lobbyUsers.get(0).getDeck().isEmpty() && lobbyUsers.get(1).getDeck().size() == 8)
-                {
-                    lobbyUsers.get(0).setStatsLoss();
-                    lobbyUsers.get(1).setStatsWin();
-                    battleLog.add(lobbyUsers.get(1).getUsername() + " won the battle.");
-                }
-                else if (lobbyUsers.get(1).getDeck().isEmpty() && lobbyUsers.get(0).getDeck().size() == 8)
-                {
-                    lobbyUsers.get(1).setStatsLoss();
-                    lobbyUsers.get(0).setStatsWin();
-                    battleLog.add(lobbyUsers.get(0).getUsername() + " won the battle.");
-                }
-                else
-                {
-                    battleLog.add("Draw.");
-                }
-                //TODO RESET DECKS
-                String responseBody = String.join("\n", battleLog);
-                responseBody += "\"The battle has been carried out successfully.\\n\"";
-
+                // get battle report from Lobby and remove it there
+                String battleReport = requestContext.getLobby().getBattleLog().remove(usr);
+                //TODO UPDATE USER
+                // assemble response for client
                 response.getHeader().setName("Content-Type");
-                response.getHeader().setValue("application/json; charset=utf-8");
+                response.getHeader().setValue("text/plain; charset=utf-8");
                 response.setHttpStatus(HttpStatus.OK);
-                response.setBody(responseBody);
+                response.setBody(battleReport);
+            }
+            else
+            {
+                // assemble response for client
+                response.getHeader().setName("Content-Type");
+                response.getHeader().setValue("text/plain; charset=utf-8");
+                response.setHttpStatus(HttpStatus.CONFLICT);
+                response.setBody("For some reason, the lobby did not accept to line you up in its battle queue. Possible reasons: Your deck does not contain EXACTLY 4 cards. Or you are already lined-up in queue and waiting for a battle opponent.");
             }
         }
         return response;

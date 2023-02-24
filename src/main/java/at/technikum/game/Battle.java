@@ -3,9 +3,7 @@ package at.technikum.game;
 import at.technikum.application.model.User;
 import at.technikum.application.model.card.Card;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class Battle
 {
@@ -54,27 +52,36 @@ public class Battle
         return (deck == null || deck.isEmpty()) ? null : deck.remove(getRandomIndex(deck));
     }
 
-    public String determineRoundsWinner(List<Card> deck1, List<Card> deck2)
+    public String determineRoundsWinner()
     {
-       String battleReport = null;
-       Card card1 = drawCard(deck1);
-       Card card2 = drawCard(deck2);
+        Card card1 = drawCard(this.user1.getDeck()); // TODO: cards in some tests were null!! check!
+        Card card2 = drawCard(this.user2.getDeck());
 
-
+        String battleReport = card1.toString() + " vs " + card2.toString() + " => ";
 
         // TODO check special case
-        if (card1.calculatedDamage(card2) > card2.calculatedDamage(card1))
+
+        float roundResult = card1.calculatedDamage(card2) - card2.calculatedDamage(card1);
+
+        User winner = null;
+        if(roundResult < 0)
+            winner = this.user2;
+        else if (roundResult > 0)
+            winner = this.user1;
+
+        if(winner!=null)
         {
-            battleReport += card1.toString() + " vs " + card2.toString() + "\n" + card1.onlyNameToString() + "defeats" + card2.onlyNameToString() + "\n";
-            user1.getDeck().add(card1);
-            user1.getDeck().add(card2);
+            winner.getDeck().add(card1);
+            winner.getDeck().add(card2);
+            battleReport += winner + " wins.";
         }
-        else if (card1.calculatedDamage(card2) < card2.calculatedDamage(card1))
+        else
         {
-            battleReport += card1.toString() + " vs " + card2.toString() + "\n" + card2.onlyNameToString() + "defeats" + card1.onlyNameToString() + "\n";
-            user2.getDeck().add(card2);
-            user2.getDeck().add(card1);
+            this.user1.getDeck().add(card1);
+            this.user2.getDeck().add(card2);
+            battleReport += "It's a Draw.";
         }
+
         return battleReport;
     }
 
@@ -83,17 +90,43 @@ public class Battle
         user.getDeck().add(card);
     }
 
-    public List<String> fightBattle()
+    public String fightBattle()
     {
-        List<String> battleLog = new ArrayList<>();
+        String battleReport = "";
         int roundCounter = 0;
+
+        //List<Card> originalDeck1 = new ArrayList<Card>();
+        //List<Card> originalDeck2 = new ArrayList<Card>();
+
+        ///Collections.copy(originalDeck1, user1.getDeck());
+        //Collections.copy(originalDeck2, user2.getDeck());
 
         do
         {
             roundCounter++;
-            battleLog.add(determineRoundsWinner(user1.getDeck(), user2.getDeck()));
+            battleReport += (determineRoundsWinner() + "\n");
         } while (roundCounter == 100 || user1.getDeck().isEmpty() || user2.getDeck().isEmpty());
 
-        return battleLog;
+        if (user1.getDeck().isEmpty())
+        {
+            user1.setStatsLoss();
+            user2.setStatsWin();
+            battleReport += user2.getUsername() + " won the battle.";
+        }
+        else if (user2.getDeck().isEmpty())
+        {
+            user2.setStatsLoss();
+            user1.setStatsWin();
+            battleReport += user1.getUsername() + " won the battle.";
+        }
+        else
+        {
+            battleReport += "Draw.";
+        }
+
+        //user1.setDeck(originalDeck1);
+        //user2.setDeck(originalDeck2);
+
+        return battleReport;
     }
 }

@@ -3,6 +3,7 @@ package at.technikum.application.model;
 import at.technikum.application.model.card.Card;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -13,8 +14,8 @@ public class User {
     private String password;
 
     private String realName;
-    private String bio;
-    private String image;
+    private String bio = "";
+    private String image = "";
 
     private int elo;
 
@@ -22,9 +23,9 @@ public class User {
 
     private int losses;
 
-    private List<Card> deck;
+    private List<Card> deck = new ArrayList<>();
 
-    private List<Card> collection;
+    private List<Card> collection = new ArrayList<>();
 
     private String userToken;
 
@@ -32,10 +33,7 @@ public class User {
 
     private int coins;
 
-/*    public User() {
-        this.username = username;
-        this.password = password;
-    }*/
+    public User() {    }
 
     public User(int userId, String username, String password, String realName, String bio, String image,
                 int elo, int wins, int losses, List<Card> deck, List<Card> collection, int coins) {
@@ -172,7 +170,7 @@ public class User {
     public void setCoins(int coins) {
         this.coins = coins;
     }
-    
+
     public void setUserToken(String token) {
         this.userToken = token;
     }
@@ -200,14 +198,34 @@ public class User {
 
     public void setStatsWin()
     {
-        this.setElo( getElo() + 3);
-        this.setWins( getWins() + 1 );
+        this.elo += 3;
+        this.wins++;
     }
 
     public void setStatsLoss()
     {
-        this.setElo( getElo() - 5 );
-        this.setLosses( getLosses() +1 );
+        this.elo -= 5;
+        this.losses++;
     }
 
+    @Override
+    public String toString()
+    {
+        return this.username == null ? "" : this.username;
+    }
+
+    @Override
+    public boolean equals(Object anObject)
+    {
+        if (anObject == null)
+            return false;
+
+        try {
+            User user = (User) anObject;
+            return this.userId == user.getUserId();
+        }
+        catch (ClassCastException e){
+            return false;
+        }
+    }
 }

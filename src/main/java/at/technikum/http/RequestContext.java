@@ -1,5 +1,6 @@
 package at.technikum.http;
 
+import at.technikum.game.Lobby;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -16,6 +17,8 @@ public class RequestContext {
     private List<Header> headers;
     private Map<String, String > urlParameters;
     private String body;
+
+    private Lobby lobby;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -67,6 +70,16 @@ public class RequestContext {
         this.token = token;
     }
 
+    public void setLobby(Lobby l)
+    {
+        this.lobby = l;
+    }
+
+    public Lobby getLobby()
+    {
+        return this.lobby;
+    }
+
     public ObjectMapper getObjectMapper() {
         return objectMapper;
     }
@@ -96,12 +109,14 @@ public class RequestContext {
         }
     }
     public void print() {
+        // todo check for null values
         System.out.println("HTTP-Verb: " + httpVerb);
         System.out.println("Path " + path);
         System.out.println("Extensions: " + this.pathExtensions);
         System.out.println("URL parameters: " + this.urlParameters);
         System.out.println("Headers: " + headers);
-        System.out.println("Body: " + body);
+        System.out.println("Body: " + (body == null ? "null" : body));
+        System.out.println("Lobby: " + (this.lobby == null ? "null" : lobby));
     }
 
     public String extractToken()
