@@ -5,13 +5,11 @@ import at.technikum.application.model.card.Card;
 
 import java.util.*;
 
-import static at.technikum.application.model.card.Card.specialCase;
+import static at.technikum.application.model.card.Card.isSpecialCase;
 
 public class Battle
 {
     private User user1, user2;
-
-
 
     public Battle(User user1, User user2) {
         this.user1 = user1;
@@ -64,53 +62,62 @@ public class Battle
 
         System.out.println(card1.isSpecialCase(card2) || card2.isSpecialCase(card1));
 
+
+        // build table for battle log
         StringBuilder tableBuilder = new StringBuilder();
-        tableBuilder.append(String.format(" %-18s| %-18s| %-18s| %-18s| %-18s| %-18s|\n", "Card 1", "Base damage", "Effective Damage", "Card 2", "Base damage", "Effective Damage"));
-        tableBuilder.append(String.format(" %-18s| %-18s| %-18.2f| %-18s| %-18s| %-18.2f|\n", card1.onlyNameToString(), card1.getBaseDamage(), card1.calculatedDamage(card2), card2.onlyNameToString(), card2.getBaseDamage(), card2.calculatedDamage(card1)));
+
 
         User winner = null;
 
-        // TODO check special case
-        if (specialCase(card1, card2))
+        // check if isSpecialCase
+        // determine which of the triggered special cases wins
+        if (isSpecialCase(card1, card2))
         {
-            System.out.println("We got ourselves a special case");
             if (card2.isSpecialCase(card1))
-            {
-                winner = this.user2;
-                winner.getDeck().add(card1);
-                winner.getDeck().add(card2);
-                tableBuilder.append(" Special Case").append(" " + winner.getUsername() + " wins this round.\n");
-            }
-            else if (card1.isSpecialCase(card2))
             {
                 winner = this.user1;
                 winner.getDeck().add(card1);
                 winner.getDeck().add(card2);
-                tableBuilder.append(" Special Case").append(" " + winner.getUsername() + " wins this round.\n");
+                tableBuilder.append(" Special case: " + card1.onlyNameToString() + " counters " + card2.onlyNameToString()).append("\n " + winner.getUsername() + " wins this round.\n");
+            }
+            else if (card1.isSpecialCase(card2))
+            {
+                winner = this.user2;
+                winner.getDeck().add(card1);
+                winner.getDeck().add(card2);
+                tableBuilder.append(" Special case: " + card2.onlyNameToString() + " counters " + card1.onlyNameToString()).append("\n " + winner.getUsername() + " wins this round.\n");
             }
             return tableBuilder.toString();
         }
-
-        float roundResult = card1.calculatedDamage(card2) - card2.calculatedDamage(card1);
-
-        if(roundResult < 0)
-            winner = this.user2;
-        else if (roundResult > 0)
-            winner = this.user1;
-
-        if(winner!=null)
-        {
-            winner.getDeck().add(card1);
-            winner.getDeck().add(card2);
-            tableBuilder.append(" " + winner.getUsername() + " wins this round.\n");
-        }
         else
         {
-            this.user1.getDeck().add(card1);
-            this.user2.getDeck().add(card2);
-            tableBuilder.append(" It's a Draw.");
-        }
+            tableBuilder.append(String.format(" %-18s| %-18s| %-18s| %-18s| %-18s| %-18s|\n", "Card 1", "Base damage", "Effective Damage", "Card 2", "Base damage", "Effective Damage"));
+            tableBuilder.append(String.format(" %-18s| %-18s| %-18.2f| %-18s| %-18s| %-18.2f|\n",
+                                                card1.onlyNameToString(),
+                                                card1.getBaseDamage(),
+                                                card1.calculatedDamage(card2),
+                                                card2.onlyNameToString(), card2.getBaseDamage(),
+                                                card2.calculatedDamage(card1)));
 
+            float roundResult = card1.calculatedDamage(card2) - card2.calculatedDamage(card1);
+            if(roundResult < 0)
+                winner = this.user2;
+            else if (roundResult > 0)
+                winner = this.user1;
+
+            if(winner!=null)
+            {
+                winner.getDeck().add(card1);
+                winner.getDeck().add(card2);
+                tableBuilder.append(" " + winner.getUsername() + " wins this round.\n");
+            }
+            else
+            {
+                this.user1.getDeck().add(card1);
+                this.user2.getDeck().add(card2);
+                tableBuilder.append(" It's a Draw.\n");
+            }
+        }
         return tableBuilder.toString();
     }
 

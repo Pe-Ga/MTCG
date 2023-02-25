@@ -164,12 +164,7 @@ public class Card
             }
             case Knight ->
             {
-                if (this.isSpell())
-                {
-                    this.isWater();
-                    return true;
-                }
-                return false;
+                return this.isSpell() && card.getElementType() == ElementType.Water;
             }
             case Kraken ->
             {
@@ -186,7 +181,7 @@ public class Card
         }
     }
 
-    public static boolean specialCase(Card card1, Card card2)
+    public static boolean isSpecialCase(Card card1, Card card2)
     {
       return card1.isSpecialCase(card2) || card2.isSpecialCase(card1);
     }
