@@ -5,6 +5,8 @@ import at.technikum.application.model.card.Card;
 
 import java.util.*;
 
+import static at.technikum.application.model.card.Card.specialCase;
+
 public class Battle
 {
     private User user1, user2;
@@ -60,15 +62,37 @@ public class Battle
         if (card1 == null || card2 == null)
             return user1 + " vs. " + user2 + "\nBattle aborted. Reason: No cards in a user's deck.";
 
+        System.out.println(card1.isSpecialCase(card2) || card2.isSpecialCase(card1));
+
         StringBuilder tableBuilder = new StringBuilder();
-        tableBuilder.append(String.format("%-18s|%-18s|%-18s|%-18s|%-18s|%-18s|\n", "Card 1", "Base damage", "Effective Damage", "Card 2", "Base damage", "Effective Damage"));
-        tableBuilder.append(String.format("%-18s|%-18s|%-18.2f|%-18s|%-18s|%-18.2f|\n", card1.onlyNameToString(), card1.getBaseDamage(), card1.calculatedDamage(card2), card2.onlyNameToString(), card2.getBaseDamage(), card2.calculatedDamage(card1)));
+        tableBuilder.append(String.format(" %-18s| %-18s| %-18s| %-18s| %-18s| %-18s|\n", "Card 1", "Base damage", "Effective Damage", "Card 2", "Base damage", "Effective Damage"));
+        tableBuilder.append(String.format(" %-18s| %-18s| %-18.2f| %-18s| %-18s| %-18.2f|\n", card1.onlyNameToString(), card1.getBaseDamage(), card1.calculatedDamage(card2), card2.onlyNameToString(), card2.getBaseDamage(), card2.calculatedDamage(card1)));
+
+        User winner = null;
 
         // TODO check special case
+        if (specialCase(card1, card2))
+        {
+            System.out.println("We got ourselves a special case");
+            if (card2.isSpecialCase(card1))
+            {
+                winner = this.user2;
+                winner.getDeck().add(card1);
+                winner.getDeck().add(card2);
+                tableBuilder.append(" Special Case").append(" " + winner.getUsername() + " wins this round.\n");
+            }
+            else if (card1.isSpecialCase(card2))
+            {
+                winner = this.user1;
+                winner.getDeck().add(card1);
+                winner.getDeck().add(card2);
+                tableBuilder.append(" Special Case").append(" " + winner.getUsername() + " wins this round.\n");
+            }
+            return tableBuilder.toString();
+        }
 
         float roundResult = card1.calculatedDamage(card2) - card2.calculatedDamage(card1);
 
-        User winner = null;
         if(roundResult < 0)
             winner = this.user2;
         else if (roundResult > 0)
@@ -78,13 +102,13 @@ public class Battle
         {
             winner.getDeck().add(card1);
             winner.getDeck().add(card2);
-            tableBuilder.append(winner.getUsername() + " wins this round.");
+            tableBuilder.append(" " + winner.getUsername() + " wins this round.\n");
         }
         else
         {
             this.user1.getDeck().add(card1);
             this.user2.getDeck().add(card2);
-            tableBuilder.append("It's a Draw.");
+            tableBuilder.append(" It's a Draw.");
         }
 
         return tableBuilder.toString();

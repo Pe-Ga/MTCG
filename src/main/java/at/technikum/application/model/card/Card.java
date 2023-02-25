@@ -78,6 +78,41 @@ public class Card
         return this.monsterType != MonsterType.Spell && this.monsterType != null;
     }
 
+    public boolean isGoblin()
+    {
+        return this.monsterType == MonsterType.Goblin;
+    }
+
+    public boolean isDragon()
+    {
+        return this.monsterType == MonsterType.Dragon;
+    }
+
+    public boolean isOrc()
+    {
+        return this.monsterType == MonsterType.Orc;
+    }
+
+    public boolean isElve()
+    {
+        return this.monsterType == MonsterType.Elve;
+    }
+
+    public boolean isKraken()
+    {
+        return this.monsterType == MonsterType.Kraken;
+    }
+
+    public boolean isSpell()
+    {
+        return this.monsterType == MonsterType.Spell;
+    }
+
+    public boolean isWater()
+    {
+        return this.elementType == ElementType.Water;
+    }
+
     public float calculatedDamage(Card card)
     {
         float factor;
@@ -114,64 +149,46 @@ public class Card
             return this.baseDamage * factor;
     }
 
-    boolean isSpecialCase(Card card)
+    public boolean isSpecialCase(Card card)
     {
-        if(card.getMonsterType() == MonsterType.Goblin && this.monsterType == MonsterType.Dragon)
+        switch(card.getMonsterType())
         {
-            return true;
-        }
+            case Goblin ->
+            {
+               return this.isDragon();
+            }
 
-        if (card.getMonsterType() == MonsterType.Wizzard && this.monsterType == MonsterType.Orc)
-        {
-            return true;
+            case Wizzard ->
+            {
+              return this.isOrc();
+            }
+            case Knight ->
+            {
+                if (this.isSpell())
+                {
+                    this.isWater();
+                    return true;
+                }
+                return false;
+            }
+            case Kraken ->
+            {
+                return this.isSpell();
+            }
+            case Elve ->
+            {
+                return this.isDragon() && card.getElementType() == ElementType.Fire;
+            }
+            default ->
+            {
+                return false;
+            }
         }
-
-        if (card.getMonsterType() == MonsterType.Knight && (this.monsterType == MonsterType.Spell && this.elementType == ElementType.Water))
-        {
-            return true;
-        }
-
-        if (card.getMonsterType() == MonsterType.Kraken && this.monsterType == MonsterType.Spell)
-        {
-            return true;
-        }
-
-        if ((card.getMonsterType() == MonsterType.Elve && card.getElementType() == ElementType.Fire) && this.monsterType == MonsterType.Dragon)
-        {
-            return true;
-        }
-
-    return false;
     }
 
-    boolean specialCaseWon(Card card)
+    public static boolean specialCase(Card card1, Card card2)
     {
-        if(card.getMonsterType() == MonsterType.Goblin && this.monsterType == MonsterType.Dragon)
-        {
-            return true;
-        }
-
-        if (card.getMonsterType() == MonsterType.Wizzard && this.monsterType == MonsterType.Orc)
-        {
-            return false;
-        }
-
-        if (card.getMonsterType() == MonsterType.Knight && (this.monsterType == MonsterType.Spell && this.elementType == ElementType.Water))
-        {
-            return true;
-        }
-
-        if (card.getMonsterType() == MonsterType.Kraken && this.monsterType == MonsterType.Spell)
-        {
-            return false;
-        }
-
-        if ((card.getMonsterType() == MonsterType.Elve && card.getElementType() == ElementType.Fire) && this.monsterType == MonsterType.Dragon)
-        {
-            return false;
-        }
-
-        return false;
+      return card1.isSpecialCase(card2) || card2.isSpecialCase(card1);
     }
 
     @Override
