@@ -158,7 +158,7 @@ public class Card
                return this.isDragon();
             }
 
-            case Wizzard ->
+            case Wizard ->
             {
               return this.isOrc();
             }

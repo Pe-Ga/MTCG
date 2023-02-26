@@ -2,6 +2,8 @@ package at.technikum.game;
 
 import at.technikum.application.model.User;
 import at.technikum.application.model.card.Card;
+import at.technikum.application.model.card.ElementType;
+import at.technikum.application.model.card.MonsterType;
 
 import java.util.*;
 
@@ -10,6 +12,26 @@ import static at.technikum.application.model.card.Card.isSpecialCase;
 public class Battle
 {
     private User user1, user2;
+    private static SpecialCaseSet mtcgSpecialCases = Battle.buildMtcgSpecialCases();
+
+    public static SpecialCaseSet buildMtcgSpecialCases()
+    {
+        SpecialCaseSet specialCases = new SpecialCaseSet();
+
+        specialCases.addSpecialCase(MonsterType.Goblin, null, MonsterType.Dragon, null, SpecialCaseResult.CARD2_WINS);
+        specialCases.addSpecialCase(MonsterType.Dragon, null, MonsterType.Elve, ElementType.Fire, SpecialCaseResult.CARD2_WINS);
+        specialCases.addSpecialCase(MonsterType.Dragon, null, MonsterType.Goblin, null, SpecialCaseResult.CARD1_WINS);
+        specialCases.addSpecialCase(MonsterType.Wizard, null, MonsterType.Orc, null, SpecialCaseResult.CARD1_WINS);
+        specialCases.addSpecialCase(MonsterType.Orc, null, MonsterType.Wizard, null, SpecialCaseResult.CARD2_WINS);
+        specialCases.addSpecialCase(MonsterType.Knight, null, MonsterType.Spell, ElementType.Water, SpecialCaseResult.CARD2_WINS);
+        specialCases.addSpecialCase(MonsterType.Elve, ElementType.Fire, MonsterType.Dragon, null, SpecialCaseResult.CARD1_WINS);
+        specialCases.addSpecialCase(MonsterType.Kraken, null, MonsterType.Spell, null, SpecialCaseResult.CARD1_WINS);
+        specialCases.addSpecialCase(MonsterType.Spell, ElementType.Water, MonsterType.Knight, null, SpecialCaseResult.CARD1_WINS);
+        specialCases.addSpecialCase(MonsterType.Spell, null, MonsterType.Kraken, null, SpecialCaseResult.CARD2_WINS);
+        specialCases.addSpecialCase(MonsterType.Spell, ElementType.Water, MonsterType.Kraken, null, SpecialCaseResult.CARD2_WINS);
+
+        return specialCases;
+    }
 
     public Battle(User user1, User user2) {
         this.user1 = user1;
@@ -60,36 +82,15 @@ public class Battle
         if (card1 == null || card2 == null)
             return user1 + " vs. " + user2 + "\nBattle aborted. Reason: No cards in a user's deck.";
 
-        System.out.println(card1.isSpecialCase(card2) || card2.isSpecialCase(card1));
-
-
         // build table for battle log
         StringBuilder tableBuilder = new StringBuilder();
-
 
         User winner = null;
 
         // check if isSpecialCase
-        // determine which of the triggered special cases wins
-        if (isSpecialCase(card1, card2))
-        {
-            if (card2.isSpecialCase(card1))
-            {
-                winner = this.user1;
-                winner.getDeck().add(card1);
-                winner.getDeck().add(card2);
-                tableBuilder.append(" Special case: " + card1.onlyNameToString() + " counters " + card2.onlyNameToString()).append("\n " + winner.getUsername() + " wins this round.\n");
-            }
-            else if (card1.isSpecialCase(card2))
-            {
-                winner = this.user2;
-                winner.getDeck().add(card1);
-                winner.getDeck().add(card2);
-                tableBuilder.append(" Special case: " + card2.onlyNameToString() + " counters " + card1.onlyNameToString()).append("\n " + winner.getUsername() + " wins this round.\n");
-            }
-            return tableBuilder.toString();
-        }
-        else
+        SpecialCaseResult specialCaseResult = Battle.mtcgSpecialCases.evaluate(card1, card2);
+
+        if(specialCaseResult == SpecialCaseResult.NO_SPECIAL_CASE)
         {
             tableBuilder.append(String.format(" %-18s| %-18s| %-18s| %-18s| %-18s| %-18s|\n", "Card 1", "Base damage", "Effective Damage", "Card 2", "Base damage", "Effective Damage"));
             tableBuilder.append(String.format(" %-18s| %-18s| %-18.2f| %-18s| %-18s| %-18.2f|\n",
@@ -100,24 +101,33 @@ public class Battle
                                                 card2.calculatedDamage(card1)));
 
             float roundResult = card1.calculatedDamage(card2) - card2.calculatedDamage(card1);
+
             if(roundResult < 0)
                 winner = this.user2;
             else if (roundResult > 0)
                 winner = this.user1;
-
-            if(winner!=null)
-            {
-                winner.getDeck().add(card1);
-                winner.getDeck().add(card2);
-                tableBuilder.append(" " + winner.getUsername() + " wins this round.\n");
-            }
-            else
-            {
-                this.user1.getDeck().add(card1);
-                this.user2.getDeck().add(card2);
-                tableBuilder.append(" It's a Draw.\n");
-            }
         }
+        else
+        {
+            winner = specialCaseResult == SpecialCaseResult.CARD1_WINS ? user1 : user2;
+            String verb = winner == user1 ? "defeats": "defeated by";
+            tableBuilder.append(" Special case: " + card1.onlyNameToString() + " " + verb + " " + card2.onlyNameToString()).append("\n");
+
+        }
+
+        if(winner!=null)
+        {
+            winner.getDeck().add(card1);
+            winner.getDeck().add(card2);
+            tableBuilder.append(" " + winner.getUsername() + " wins this round.\n");
+        }
+        else
+        {
+            this.user1.getDeck().add(card1);
+            this.user2.getDeck().add(card2);
+            tableBuilder.append(" It's a Draw.\n");
+        }
+
         return tableBuilder.toString();
     }
 
@@ -137,12 +147,12 @@ public class Battle
         originalDeck1.addAll(user1.getDeck());
         originalDeck2.addAll(user2.getDeck());
 
-        battleReport.append("    ").append(user1).append("    VS    ").append(user2).append("\n");
+        battleReport.append("    ").append(user1).append("    VS    ").append(user2).append("\n\n");
         do
         {
             roundCounter++;
             battleReport.append("Round: " + roundCounter + "\n").append(determineRoundsWinner()).append("\n");
-        } while ((!user1.getDeck().isEmpty() && !user2.getDeck().isEmpty()) && roundCounter <= 100);
+        } while ((!user1.getDeck().isEmpty() && !user2.getDeck().isEmpty()) && roundCounter < 100);
 
         if (user1.getDeck().isEmpty())
         {
@@ -158,7 +168,7 @@ public class Battle
         }
         else
         {
-            battleReport.append("Draw.");
+            battleReport.append("The battle between " + user1 +" and " + user2 + " results in a Draw.");
         }
 
         user1.setDeck(originalDeck1);

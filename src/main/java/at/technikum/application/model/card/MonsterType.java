@@ -4,7 +4,7 @@ public enum MonsterType
 {
     Goblin,
     Dragon,
-    Wizzard,
+    Wizard,
     Orc,
     Knight,
     Kraken,
