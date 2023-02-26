@@ -8,7 +8,8 @@ public class RequestBody {
 
     public RequestBody(){};
 
-    public RequestBody(String name, String bio, String image) {
+    public RequestBody(String name, String bio, String image)
+    {
         Name = name;
         Bio = bio;
         Image = image;

@@ -65,6 +65,67 @@ public class CardTest
 
     }
 
+    @Test
+    public void testCalculatedDamageForNullCard() {
+        Card card1 = new Card(MonsterType.Dragon, ElementType.Fire, 10);
+        float expectedDamage = 0;
+        float actualDamage = card1.calculatedDamage(null);
+        assertEquals(expectedDamage, actualDamage, 0.0);
+    }
 
+    @Test
+    public void testCalculatedDamageForSameElementType() {
+        Card card1 = new Card(MonsterType.Orc, ElementType.Water, 10);
+        Card card2 = new Card(MonsterType.Goblin, ElementType.Water, 5);
+        float expectedDamage = 10;
+        float actualDamage = card1.calculatedDamage(card2);
+        assertEquals(expectedDamage, actualDamage, 0.0);
+    }
+
+    @Test
+    public void testCalculatedDamageForDifferentElementTypes() {
+        Card card1 = new Card(MonsterType.Elve, ElementType.Fire, 15);
+        Card card2 = new Card(MonsterType.Knight, ElementType.Water, 10);
+        float expectedDamage = 15;
+        float actualDamage = card1.calculatedDamage(card2);
+        assertEquals(expectedDamage, actualDamage, 0.0);
+    }
+
+    @Test
+    public void testIsSpecialCase() {
+        Card card1 = new Card(MonsterType.Dragon, ElementType.Fire, 10);
+        Card card2 = new Card(MonsterType.Goblin, ElementType.Water, 5);
+        boolean expectedResult = true;
+        boolean actualResult = card1.isSpecialCase(card2);
+        assertEquals(expectedResult, actualResult);
+    }
+
+    @Test
+    public void testIsNotSpecialCase() {
+        Card card1 = new Card(MonsterType.Dragon, ElementType.Fire, 10);
+        Card card2 = new Card(MonsterType.Orc, ElementType.Normal, 8);
+        boolean expectedResult = false;
+        boolean actualResult = card1.isSpecialCase(card2);
+        assertEquals(expectedResult, actualResult);
+    }
+
+
+    @Test
+    public void testIsSpecialCaseForTwoCards() {
+        Card card1 = new Card(MonsterType.Wizard, ElementType.Normal, 10);
+        Card card2 = new Card(MonsterType.Orc, ElementType.Normal, 5);
+        boolean expectedResult = true;
+        boolean actualResult = Card.isSpecialCase(card1, card2);
+        assertEquals(expectedResult, actualResult);
+    }
+
+    @Test
+    public void testIsNotSpecialCaseForTwoCards() {
+        Card card1 = new Card(MonsterType.Elve, ElementType.Fire, 12);
+        Card card2 = new Card(MonsterType.Kraken, ElementType.Normal, 7);
+        boolean expectedResult = false;
+        boolean actualResult = Card.isSpecialCase(card1, card2);
+        assertEquals(expectedResult, actualResult);
+    }
 
 }

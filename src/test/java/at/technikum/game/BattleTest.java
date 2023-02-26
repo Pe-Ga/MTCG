@@ -77,9 +77,8 @@ public class BattleTest
     }
 
     @Test
-    void drawCardsPlayOneRoundRestoreOriginalDeck()
+    void drawCardsFromDeck()
     {
-/*
         assertEquals(4, user1.getDeck().size());
         assertEquals(4, user2.getDeck().size());
 
@@ -88,8 +87,31 @@ public class BattleTest
 
         assertEquals(3, user1.getDeck().size());
         assertEquals(3, user2.getDeck().size());
-*/
 
+        card1 = drawCard(user1.getDeck());
+        card2 = drawCard(user2.getDeck());
+
+        assertEquals(2, user1.getDeck().size());
+        assertEquals(2, user2.getDeck().size());
+
+        card1 = drawCard(user1.getDeck());
+        card2 = drawCard(user2.getDeck());
+
+        assertEquals(1, user1.getDeck().size());
+        assertEquals(1, user2.getDeck().size());
+
+        card1 = drawCard(user1.getDeck());
+        card2 = drawCard(user2.getDeck());
+
+        assertEquals(0, user1.getDeck().size());
+        assertEquals(0, user2.getDeck().size());
+
+
+    }
+
+    @Test
+    void drawCardsPlayOneRoundRestoreOriginalDeck()
+    {
         //test deck
         Card card1 = new Card(MonsterType.Goblin, ElementType.Normal, 20);
         Card card2 = new Card(MonsterType.Goblin, ElementType.Normal, 10);
@@ -145,7 +167,7 @@ public class BattleTest
     }
 
     @Test
-    void playerBLossesBattleStatsUpdate()
+    void playerBattleStatsUpdate()
     {
         Card card1 = new Card(MonsterType.Goblin, ElementType.Normal, 20);
         Card card2 = new Card(MonsterType.Goblin, ElementType.Normal, 10);
@@ -227,6 +249,7 @@ public class BattleTest
 
         String testBattleReport = """
                     %s    VS    %s
+                    
                 Round: 1
                  Card 1            | Base damage       | Effective Damage  | Card 2            | Base damage       | Effective Damage  |
                  NormalGoblin      | 20                | 20,00             | NormalGoblin      | 10                | 10,00             |
@@ -258,11 +281,12 @@ public class BattleTest
 
         String testBattleReport = """
                     %s    VS    %s
-                Round: 1
-                 Special case: NormalGoblin counters NormalDragon
-                 PlayerA wins this round.
                                 
-                %s won the battle.""".formatted(user1.getUsername(), user2.getUsername(), user1.getUsername(), user1.getUsername());
+                Round: 1
+                 Special case: NormalGoblin defeated by NormalDragon
+                 %s wins this round.
+                                
+                %s won the battle.""".formatted(user1.getUsername(), user2.getUsername(), user2.getUsername(), user2.getUsername());
 
         assertEquals(testBattleReport, battleReport);
     }
@@ -343,7 +367,4 @@ public class BattleTest
                 specialCases.evaluate(dragon, elve)
         );
     }
-
-
-
 }

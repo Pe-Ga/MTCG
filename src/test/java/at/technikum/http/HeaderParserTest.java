@@ -13,69 +13,67 @@ class HeaderParserTest {
     private HeaderParser headerParser;
 
     @BeforeEach
-    void init() {
+    void init()
+    {
         headerParser = new HeaderParser();
     }
 
     @Test
-    void testParseSimpleHeader() {
-        // Arrange
+    void testParseSimpleHeader()
+    {
         String rawHeader = "Accept: text/html";
 
-        // Act
         Header header = headerParser.parseHeader(rawHeader);
 
-        // Assert
         assertEquals("Accept", header.getName());
         assertEquals("text/html", header.getValue());
     }
 
     @Test
-    void testHeaderWithColonInValue() {
-        // Arrange
+    void testHeaderWithColonInValue()
+    {
         String rawHeader = "Type: test:html";
 
-        // Act
         Header header = headerParser.parseHeader(rawHeader);
 
-        // Assert
+
         assertEquals("Type", header.getName());
         assertEquals("test:html", header.getValue());
     }
 
     @Test
-    void testParseHeadersToMap() {
-        // Arrange
+    void testParseHeadersToMap()
+    {
         List<String> rawHeaders = List.of(
                 "Accept: application/json",
                 "Content-Type: text/plain"
         );
-        // Act
+
         Map<String, String> result =
                 headerParser.parseHeadersToMap(rawHeaders);
-        // Assert
+
         assertEquals(2, result.size());
         assertEquals("application/json", result.get("Accept"));
         assertEquals("text/plain", result.get("Content-Type"));
     }
 
     @Test
-    void testNullInput() {
-        // Act
+    void testNullInput()
+    {
         Map<String, String> result =
                 headerParser.parseHeadersToMap(null);
         Header resultHeader = headerParser.parseHeader(null);
-        // Assert
+
         assertNotNull(result);
         assertNull(resultHeader);
     }
 
     @Test
-    void testEmptyList() {
-        // Act
+    void testEmptyList()
+    {
         Map<String, String> result =
                 headerParser.parseHeadersToMap(List.of());
-        // Assert
+
         assertNotNull(result);
     }
 }

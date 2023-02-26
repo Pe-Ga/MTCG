@@ -201,4 +201,6 @@ public class Card
         return elementTypeString+monsterTypeString;
     }
 
+
+
 }
