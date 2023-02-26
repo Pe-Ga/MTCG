@@ -1,52 +1,25 @@
+/* Monster Trading Card Game
+ *
+ * Author:      Peter Gamsjäger
+ *
+ */
+
+
 package at.technikum;
 
 import at.technikum.application.endpoints.*;
 import at.technikum.application.router.*;
 import at.technikum.application.util.Pair;
-import at.technikum.application.model.card.ElementType;
-import at.technikum.game.Battle;
 import at.technikum.http.HttpServer;
-import at.technikum.application.model.card.Card;
-import at.technikum.application.model.card.MonsterType;
-import at.technikum.player.Player;
 
 import java.sql.*;
 
-import java.util.LinkedList;
-import java.util.List;
+public class Main
+{
+    public static void main(String[] args) throws SQLException
+    {
 
-public class Main {
-    public static void mainOld(String[] args) {
-
-
-        System.out.println("Hello World");
-
-        Card testcard = new Card(MonsterType.Goblin, ElementType.Fire, 20);
-        System.out.println(testcard.toString());
-
-        Card test1 = new Card(MonsterType.Elve, ElementType.Normal, 67);
-        System.out.println(test1.toString());
-
-        List<Card> deck1 = new LinkedList<Card>();
-        deck1.add(new Card(MonsterType.Spell,ElementType.Fire, 1));
-        deck1.add(new Card(MonsterType.Goblin,ElementType.Water, 1));
-        deck1.add(new Card(MonsterType.Spell,ElementType.Normal, 1));
-        deck1.add(new Card(MonsterType.Knight,ElementType.Fire, 1));
-
-        List<Card> deck2 = new LinkedList<Card>();
-        deck2.add(new Card(MonsterType.Spell,ElementType.Fire, 60));
-        deck2.add(new Card(MonsterType.Goblin,ElementType.Water, 10));
-        deck2.add(new Card(MonsterType.Spell,ElementType.Normal, 40));
-        deck2.add(new Card(MonsterType.Knight,ElementType.Fire, 80));
-
-        Player player1 = new Player("Peter", deck1, null);
-        Player player2 = new Player("Ingo", deck2,null);
-
-    }
-
-    public static void main(String[] args) throws SQLException {
-
-
+        // initialize route pairs for endpoints
         var router = new Router();
 
         RouteIdentifier routeIdentifier;
@@ -100,8 +73,6 @@ public class Main {
         httpServer.start();
 
     }
-
-
 }
 
 

@@ -2,7 +2,6 @@ package at.technikum.user;
 
 import at.technikum.application.model.User;
 import at.technikum.application.model.card.Card;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -32,13 +31,11 @@ public class UserTest
                                         collection1,
                                         20);
 
-
-
-
     }
 
     @Test
-    void eloChangeUserStats() throws Exception {
+    void eloChangeUserStats() throws Exception
+    {
 
         User testUser = new User();
         testUser.setUsername("Tester");
@@ -94,5 +91,4 @@ public class UserTest
 
         assertEquals("Tester", testUser.toString());
     }
-
 }

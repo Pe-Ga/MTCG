@@ -211,7 +211,7 @@ public class BattleTest
 
 
     @Test
-    void testDrawCardRemoveFromDeck()
+    void drawCardRemoveFromDeck()
     {
         assertEquals(4, user1.getDeck().size());
         assertEquals(4, user2.getDeck().size());
@@ -230,7 +230,7 @@ public class BattleTest
     }
 
     @Test
-    void testBattleLogContainsCorrectUserNames()
+    void battleLogContainsCorrectUserNames()
     {
         Card card1 = new Card(MonsterType.Goblin, ElementType.Normal, 20);
         Card card2 = new Card(MonsterType.Goblin, ElementType.Normal, 10);
