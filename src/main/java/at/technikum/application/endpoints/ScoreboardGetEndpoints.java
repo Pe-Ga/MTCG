@@ -25,6 +25,8 @@ public class ScoreboardGetEndpoints implements Route {
         DbConnector dataSource = DataSource.getInstance();
         UserRepository postgresUserRepository =  new UserRepository(dataSource);
 
+
+
         var usr = postgresUserRepository.findUserByToken(requestContext.extractToken());
 
         if(usr == null || !usr.getUserToken().equals(requestContext.extractToken())) {

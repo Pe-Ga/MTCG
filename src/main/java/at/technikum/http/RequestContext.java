@@ -124,7 +124,11 @@ public class RequestContext {
         if (this.token == null || this.token.isEmpty())
             return null;
 
-        String[] strings = this.getToken().split(" ",2);
+        String[] strings = this.token.split(" ", 2);
+        if (strings.length < 2 || strings[1].isEmpty()) {
+            return null;
+        }
+
         return strings[1];
     }
 
