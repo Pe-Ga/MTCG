@@ -310,34 +310,6 @@ public class UserRepository implements IUserRepository {
     }
 
     @Override
-    public boolean loginUser(String username, String password)
-    {
-        if (this.loginIsValid(username, password))
-        {
-            String userToken = generateAccessToken();
-            Instant expiration = Instant.now().plus(Duration.ofMinutes(15));
-            var user = new User();
-            try ( Connection tx = dataSource.getConnection()) {
-                try ( PreparedStatement ps = tx.prepareStatement(UPDATE_ACCESS_TOKEN)) {
-                    ps.setString(1, userToken);
-                    ps.setTimestamp(2, Timestamp.from(expiration));
-                    ps.setString(3, username);
-                    ps.execute();
-                    final ResultSet rs = ps.getResultSet();
-                    //TODO rs
-                }
-            }
-            catch (SQLException e)
-            {
-                throw new IllegalStateException("DB query failed", e);
-            }
-            return false;
-
-        }
-        return true;
-    }
-
-    @Override
     public boolean loginIsValid(String username, String userpassword)
     {
         User user = new User();
@@ -364,17 +336,5 @@ public class UserRepository implements IUserRepository {
         }
         return false;
     }
-
-    @Override
-    public void deleteUserById(int id) {
-
-    }
-
-    @Override
-    public void save(User user) {
-
-    }
-
-
 
 }
