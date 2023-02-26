@@ -312,7 +312,7 @@ public class UserRepository implements IUserRepository {
     @Override
     public boolean loginUser(String username, String password)
     {
-        if (this.loginIsValid(username, password)) // isValid
+        if (this.loginIsValid(username, password))
         {
             String userToken = generateAccessToken();
             Instant expiration = Instant.now().plus(Duration.ofMinutes(15));

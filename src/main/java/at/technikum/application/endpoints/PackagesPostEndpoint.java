@@ -32,7 +32,6 @@ public class PackagesPostEndpoint implements Route {
 
             if (usr != null )
             {
-                System.out.println("PING1");
                 if (!usr.isAdmin())
                 {
                     response.getHeader().setName("Content-Type");
@@ -42,7 +41,6 @@ public class PackagesPostEndpoint implements Route {
                 }
                 else if (usr.tokenIsInvalid(requestContext.extractToken()))
                 {
-                    System.out.println("PING2");
                     response.getHeader().setName("Content-Type");
                     response.getHeader().setValue("text/plain; charset=utf-8");
                     response.setHttpStatus(HttpStatus.UNAUTHORIZED);
@@ -50,7 +48,6 @@ public class PackagesPostEndpoint implements Route {
                 }
                 else
                 {
-                    System.out.println("PING3");
                     ICardRepository cardRepository = new CardRepository(dataSource);
                     List<Card> cardList = cardRepository.getCards();
 

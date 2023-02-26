@@ -41,8 +41,8 @@ public class UsersPutEndpoint implements Route {
         System.out.println(usr.getImage());*/
 
         if(usr != null)
-        {           // TODO check expiration date
-            if(usr.getUserToken().equals(requestContext.extractToken()))
+        {
+            if(usr.getUserToken().equals(requestContext.extractToken()) || usr.isAdmin())
             {
                 usr.setRealName(requestBody.getName());
                 usr.setBio(requestBody.getBio());

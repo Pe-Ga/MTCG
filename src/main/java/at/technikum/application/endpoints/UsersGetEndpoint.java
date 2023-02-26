@@ -34,11 +34,9 @@ public class UsersGetEndpoint implements Route{
             return response;
         }
 
-       // boolean tokenIsExpired = (Instant.now().isAfter(usr.getUserTokenExpiration()));
-
         // compares token provided in header and token persited in db
-      //  if(usr.getUserToken().equals(requestContext.extractToken()) && !tokenIsExpired)
-        if (!usr.tokenIsInvalid(requestContext.extractToken()))
+        //  if(usr.getUserToken().equals(requestContext.extractToken()) && !tokenIsExpired)
+        if (!usr.tokenIsInvalid(requestContext.extractToken()) || usr.isAdmin())
         {
             ObjectMapper objectMapper = new ObjectMapper();
             ObjectNode userNode = objectMapper.createObjectNode();

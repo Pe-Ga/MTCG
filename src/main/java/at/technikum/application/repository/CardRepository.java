@@ -29,6 +29,15 @@ public class CardRepository implements ICardRepository {
             SELECT * from "Card"
             """;
 
+    private static final String INSERT_PACKAGES = """
+            INSERT INTO "Card" ("cardMonsterType", "cardDamage", "cardElementType", "cardOwner")
+            VALUES (?, ?, ?, ?)
+            """;
+
+    private static final String ASSIGN_PACKAGES_TO_OWNER = """
+            
+            """;
+
     private final DbConnector dataSource;
 
     public CardRepository(DbConnector dataSource) {
@@ -103,6 +112,25 @@ public class CardRepository implements ICardRepository {
         }
         return cardsList;
     }
+
+/*
+    @Override
+    public void savePackage(List<Card> cardPackage) {
+        try (Connection tx = dataSource.getConnection())
+        {
+            try (PreparedStatement ps = tx.prepareStatement(INSERT_PACKAGES))
+            {
+                ps.setString(1, String.valueOf(card.getMonsterType()));
+                ps.setInt(2, card.getBaseDamage());
+                ps.setString(3, String.valueOf(card.getElementType()));
+                ps.setInt(4, null);
+                ps.execute();
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+*/
 
 
 }

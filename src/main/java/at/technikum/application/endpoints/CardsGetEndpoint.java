@@ -33,7 +33,7 @@ public class CardsGetEndpoint implements Route {
 
         var usr = postgresUserRepository.findUserByToken(requestContext.extractToken());
 
-        if(usr == null || !usr.getUserToken().equals(requestContext.extractToken())) {
+        if(usr == null || !usr.tokenIsInvalid(requestContext.extractToken())) {
             response.getHeader().setName("Content-Type");
             response.getHeader().setValue("text/plain; charset=utf-8");
             response.setHttpStatus(HttpStatus.NOT_FOUND);
